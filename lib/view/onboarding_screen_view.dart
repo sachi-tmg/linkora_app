@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:linkora_app/view/login_screen_view.dart';
+import 'package:linkora_app/view/signup_screen_view.dart';
 
 class OnboardingScreenView extends StatefulWidget {
   const OnboardingScreenView({super.key});
@@ -59,7 +61,12 @@ class _OnboardingScreenViewState extends State<OnboardingScreenView> {
                 const SizedBox(height: 26),
                 ElevatedButton(
                   onPressed: () {
-                    // Handle Create your blog action
+                    // Navigate to the Signup screen when "Create your blog" is clicked
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SignupScreenView()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
@@ -89,7 +96,12 @@ class _OnboardingScreenViewState extends State<OnboardingScreenView> {
             right: 20,
             child: ElevatedButton(
               onPressed: () {
-                // Handle Sign In action
+                // Navigate to Login screen when Sign In button is clicked
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LoginScreenView()),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
