@@ -1,7 +1,6 @@
-// splash_screen_view.dart
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'onboarding_screen_view.dart'; // Import the Onboarding screen
+import 'onboarding_screen_view.dart';
 
 class SplashScreenView extends StatefulWidget {
   const SplashScreenView({super.key});
@@ -16,7 +15,6 @@ class _SplashScreenViewState extends State<SplashScreenView> {
   void initState() {
     super.initState();
 
-    // Wait for 3 seconds, then navigate to the Onboarding Screen
     Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
@@ -28,12 +26,32 @@ class _SplashScreenViewState extends State<SplashScreenView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       body: Center(
-        child: Image.asset(
-          'assets/images/logo.png', // Add your logo here
-          width: 200, // Adjust size if needed
-          height: 200,
+        child: TweenAnimationBuilder(
+          duration: const Duration(seconds: 3),
+          tween: Tween(begin: -1.0, end: 3.0),
+          curve: Curves.easeInOut,
+          builder: (context, double value, child) {
+            return ShaderMask(
+              shaderCallback: (Rect bounds) {
+                return LinearGradient(
+                  colors: [
+                    Colors.white.withOpacity(0.6),
+                    Colors.transparent,
+                    Colors.white.withOpacity(0.6)
+                  ],
+                  begin: Alignment(-1 + value, 0),
+                  end: Alignment(1 + value, 0),
+                ).createShader(bounds);
+              },
+              child: Image.asset(
+                'assets/images/white_logo.png',
+                width: 200,
+                height: 200,
+              ),
+            );
+          },
         ),
       ),
     );
