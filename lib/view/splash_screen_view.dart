@@ -1,58 +1,31 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-import 'onboarding_screen_view.dart';
+import 'package:linkora_app/model/splash_screen_model.dart';
+import 'package:linkora_app/viewmodel/splash_screen_viewmodel.dart';
+import 'package:provider/provider.dart';
 
-class SplashScreenView extends StatefulWidget {
+class SplashScreenView extends StatelessWidget {
   const SplashScreenView({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _SplashScreenViewState createState() => _SplashScreenViewState();
-}
-
-class _SplashScreenViewState extends State<SplashScreenView> {
-  @override
-  void initState() {
-    super.initState();
-
-    Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const OnboardingScreenView()),
-      );
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Center(
-        child: TweenAnimationBuilder(
-          duration: const Duration(seconds: 3),
-          tween: Tween(begin: -1.0, end: 3.0),
-          curve: Curves.easeInOut,
-          builder: (context, double value, child) {
-            return ShaderMask(
-              shaderCallback: (Rect bounds) {
-                return LinearGradient(
-                  colors: [
-                    Colors.white.withOpacity(0.6),
-                    Colors.transparent,
-                    Colors.white.withOpacity(0.6)
-                  ],
-                  begin: Alignment(-1 + value, 0),
-                  end: Alignment(1 + value, 0),
-                ).createShader(bounds);
-              },
+    return ChangeNotifierProvider(
+      create: (_) => SplashScreenViewModel(AppConfigModel()),
+      child: Consumer<SplashScreenViewModel>(
+        builder: (context, viewModel, child) {
+          viewModel.navigateToOnboarding(context);
+          viewModel.loadAppConfig();
+
+          return Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(
               child: Image.asset(
-                'assets/images/white_logo.png',
+                'assets/images/logo.png',
                 width: 200,
                 height: 200,
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
