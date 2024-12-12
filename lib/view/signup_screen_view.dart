@@ -30,10 +30,11 @@ class SignupScreenView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 40),
+                    // Full Name Field
                     TextField(
-                      onChanged: viewModel.updateUsername,
+                      onChanged: viewModel.updateFullName,
                       decoration: InputDecoration(
-                        labelText: 'Username',
+                        labelText: 'Full Name',
                         prefixIcon: const Icon(Icons.person),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -41,6 +42,7 @@ class SignupScreenView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    // Email Field
                     TextField(
                       onChanged: viewModel.updateEmail,
                       decoration: InputDecoration(
@@ -52,11 +54,25 @@ class SignupScreenView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
+                    // Password Field
                     TextField(
                       obscureText: true,
                       onChanged: viewModel.updatePassword,
                       decoration: InputDecoration(
                         labelText: 'Password',
+                        prefixIcon: const Icon(Icons.lock),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // Confirm Password Field
+                    TextField(
+                      obscureText: true,
+                      onChanged: viewModel.updateConfirmPassword,
+                      decoration: InputDecoration(
+                        labelText: 'Confirm Password',
                         prefixIcon: const Icon(Icons.lock),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
