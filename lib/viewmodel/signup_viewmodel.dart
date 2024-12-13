@@ -108,6 +108,7 @@ class SignupViewModel extends ChangeNotifier {
       Future.delayed(const Duration(seconds: 2), () {
         // Navigate to the Dashboard screen
         Navigator.pushReplacement(
+          // ignore: use_build_context_synchronously
           context,
           MaterialPageRoute(builder: (context) => const DashboardScreenView()),
         );
