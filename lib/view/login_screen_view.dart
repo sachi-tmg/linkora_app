@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:linkora_app/view/signup_screen_view.dart';
-import 'package:linkora_app/viewmodel/login_viewmodel.dart'; // Import the LoginViewModel
+import 'package:linkora_app/viewmodel/login_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreenView extends StatelessWidget {
@@ -56,7 +56,7 @@ class LoginScreenView extends StatelessWidget {
                       const SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
-                          viewModel.login(context); // Trigger login action
+                          viewModel.login(context);
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -98,7 +98,6 @@ class LoginScreenView extends StatelessWidget {
                           const Text("Don’t have an account ?"),
                           TextButton(
                             onPressed: () {
-                              // Navigate to the Signup screen
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

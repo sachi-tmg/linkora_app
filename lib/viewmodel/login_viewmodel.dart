@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:linkora_app/view/dashboard_screen_view.dart';
+import 'package:linkora_app/core/common/bottom_navigation_bar.dart';
 import 'package:linkora_app/model/login_model.dart';
 
 class LoginViewModel extends ChangeNotifier {
@@ -67,12 +67,11 @@ class LoginViewModel extends ChangeNotifier {
         ),
       );
 
-      // Navigate to Dashboard screen
       Future.delayed(const Duration(seconds: 2), () {
         Navigator.pushReplacement(
           // ignore: use_build_context_synchronously
           context,
-          MaterialPageRoute(builder: (context) => const DashboardScreenView()),
+          MaterialPageRoute(builder: (context) => const DashboardScreen()),
         );
       });
     }
