@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:linkora_app/view/login_screen_view.dart';
 import 'package:linkora_app/viewmodel/signup_viewmodel.dart';
 import 'package:provider/provider.dart';
-import 'package:linkora_app/view/login_screen_view.dart';
 
 class SignupScreenView extends StatelessWidget {
   const SignupScreenView({super.key});
@@ -86,18 +86,10 @@ class SignupScreenView extends StatelessWidget {
                           viewModel.signUp(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          backgroundColor: Colors.black,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
                         child: const Text(
                           'Sign Up',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -115,10 +107,6 @@ class SignupScreenView extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          backgroundColor: Colors.black,
                           padding: const EdgeInsets.symmetric(vertical: 8),
                         ),
                         icon: const Icon(
@@ -128,10 +116,6 @@ class SignupScreenView extends StatelessWidget {
                         ),
                         label: const Text(
                           'Continue with Google',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                          ),
                         ),
                       ),
                       const SizedBox(height: 20),

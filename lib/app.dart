@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:linkora_app/core/app_theme/app_theme.dart';
 import 'package:linkora_app/view/splash_screen_view.dart';
 
 class MyApp extends StatelessWidget {
@@ -6,9 +7,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SplashScreenView(),
+      theme: getApplicationTheme(),
+      home: const SplashScreenView(),
     );
   }
 }
