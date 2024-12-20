@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:linkora_app/viewmodel/onboarding_viewmodel.dart';
 import 'package:linkora_app/view/login_screen_view.dart';
 import 'package:linkora_app/view/signup_screen_view.dart';
+import 'package:linkora_app/viewmodel/onboarding_viewmodel.dart';
 import 'package:provider/provider.dart';
 
 class OnboardingScreenView extends StatelessWidget {
@@ -69,7 +69,6 @@ class OnboardingScreenView extends StatelessWidget {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
@@ -82,7 +81,8 @@ class OnboardingScreenView extends StatelessWidget {
                               ? "Get Started"
                               : "Next",
                           style: const TextStyle(
-                              fontSize: 17, color: Colors.white),
+                            fontSize: 17,
+                          ),
                         ),
                       ),
                     ),

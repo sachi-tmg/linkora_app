@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:linkora_app/view/signup_screen_view.dart';
 import 'package:linkora_app/viewmodel/login_viewmodel.dart'; // Import the LoginViewModel
+import 'package:provider/provider.dart';
 
 class LoginScreenView extends StatelessWidget {
   const LoginScreenView({super.key});
@@ -59,18 +59,10 @@ class LoginScreenView extends StatelessWidget {
                           viewModel.login(context); // Trigger login action
                         },
                         style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          backgroundColor: Colors.black,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
                         child: const Text(
                           'Sign In',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -88,10 +80,6 @@ class LoginScreenView extends StatelessWidget {
                       ElevatedButton.icon(
                         onPressed: () {},
                         style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          backgroundColor: Colors.black,
                           padding: const EdgeInsets.symmetric(vertical: 7),
                         ),
                         icon: const Icon(
@@ -101,10 +89,6 @@ class LoginScreenView extends StatelessWidget {
                         ),
                         label: const Text(
                           'Continue with Google',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.0,
-                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
