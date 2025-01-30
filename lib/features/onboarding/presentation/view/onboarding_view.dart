@@ -131,7 +131,7 @@ class OnboardingView extends StatelessWidget {
                                   builder: (context) {
                                     return BlocProvider<RegisterBloc>(
                                       create: (_) => getIt<RegisterBloc>(),
-                                      child: RegisterView(),
+                                      child: const RegisterView(),
                                     );
                                   },
                                 ),
