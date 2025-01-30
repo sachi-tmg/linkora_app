@@ -11,7 +11,6 @@ part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final RegisterBloc _registerBloc;
   final HomeCubit _homeCubit;
   final LoginUseCase _loginUseCase;
 
@@ -19,26 +18,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     required RegisterBloc registerBloc,
     required HomeCubit homeCubit,
     required LoginUseCase loginUseCase,
-  })  : _registerBloc = registerBloc,
-        _homeCubit = homeCubit,
+  })  : _homeCubit = homeCubit,
         _loginUseCase = loginUseCase,
         super(LoginState.initial()) {
-    on<NavigateRegisterScreenEvent>(
-      (event, emit) {
-        Navigator.push(
-          event.context,
-          MaterialPageRoute(
-            builder: (context) => MultiBlocProvider(
-              providers: [
-                BlocProvider.value(value: _registerBloc),
-              ],
-              child: event.destination,
-            ),
-          ),
-        );
-      },
-    );
-
     on<NavigateHomeScreenEvent>(
       (event, emit) {
         Navigator.pushReplacement(

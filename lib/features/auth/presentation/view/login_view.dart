@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:linkora_app/app/di/di.dart';
 import 'package:linkora_app/features/auth/presentation/view/register_view.dart';
 import 'package:linkora_app/features/auth/presentation/view_model/login/login_bloc.dart';
+import 'package:linkora_app/features/auth/presentation/view_model/signup/register_bloc.dart';
 
 class LoginView extends StatelessWidget {
   LoginView({super.key});
@@ -124,12 +126,17 @@ class LoginView extends StatelessWidget {
                         const Text("Don’t have an account ?"),
                         TextButton(
                           onPressed: () {
-                            context.read<LoginBloc>().add(
-                                  NavigateRegisterScreenEvent(
-                                    destination: RegisterView(),
-                                    context: context,
-                                  ),
-                                );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return BlocProvider<RegisterBloc>(
+                                    create: (_) => getIt<RegisterBloc>(),
+                                    child: const RegisterView(),
+                                  );
+                                },
+                              ),
+                            );
                           },
                           child: const Text('Join Us'),
                         ),
