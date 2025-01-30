@@ -1,0 +1,5 @@
+{
+    "gradle.nestedProjects": false,
+    "gradle.autoDetect": "off",
+    "terminal.integrated.env.windows": {}
+}
