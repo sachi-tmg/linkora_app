@@ -19,18 +19,17 @@ class HomeCubit extends Cubit<HomeState> {
                 child: const DashboardView(),
               ),
               const Center(child: Text('Search')),
-              const Center(child: Text('Account')),
+              const Center(child: Text('Profile')),
             ],
           ),
         );
 
   void onTabTapped(int index) {
-    final titles = ["Dashboard", "Search", "Account"];
+    final titles = ["Dashboard", "Search", "Profile"];
     emit(state.copyWith(selectedIndex: index, appBarTitle: titles[index]));
   }
 
   Future<void> logout(BuildContext context) async {
-    // Simulate async logout logic
     await Future.delayed(const Duration(seconds: 1));
     if (context.mounted) {
       Navigator.pushReplacement(

@@ -18,6 +18,7 @@ class HomeView extends StatelessWidget {
             appBar: AppBar(
               title: Text(state.appBarTitle),
               centerTitle: true,
+              automaticallyImplyLeading: false,
               actions: [
                 IconButton(
                   icon: const Icon(Icons.logout),
@@ -45,7 +46,7 @@ class HomeView extends StatelessWidget {
                 ),
                 BottomNavigationBarItem(
                   icon: Icon(Icons.person),
-                  label: 'Account',
+                  label: 'Profile',
                 ),
               ],
               currentIndex: state.selectedIndex,
