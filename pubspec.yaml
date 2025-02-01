@@ -59,6 +59,8 @@ dependencies:
   json_annotation: ^4.9.0
   connectivity_plus: ^6.1.1
   json_serializable: ^6.9.0
+  jwt_decoder: ^2.0.1
+  dart_jsonwebtoken: ^2.16.0
   
 dev_dependencies:
   flutter_test:

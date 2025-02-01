@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dartz/dartz.dart';
 import 'package:linkora_app/core/error/failure.dart';
 import 'package:linkora_app/features/auth/data/data_source/local_datasource/auth_local_data_source.dart';
@@ -41,11 +39,5 @@ class AuthLocalRepository implements IAuthRepository {
     } catch (e) {
       return Left(LocalDatabaseFailure(message: e.toString()));
     }
-  }
-
-  @override
-  Future<Either<Failure, String>> uploadProfilePicture(File file) async {
-    // TODO: implement uploadProfilePicture
-    throw UnimplementedError();
   }
 }

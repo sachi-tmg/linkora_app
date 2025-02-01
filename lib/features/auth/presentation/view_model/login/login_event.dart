@@ -17,6 +17,16 @@ class NavigateHomeScreenEvent extends LoginEvent {
   });
 }
 
+class NavigateImageScreenEvent extends LoginEvent {
+  final BuildContext context;
+  final Widget destination;
+
+  const NavigateImageScreenEvent({
+    required this.context,
+    required this.destination,
+  });
+}
+
 class LoginUserEvent extends LoginEvent {
   final BuildContext context;
   final String email;

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dartz/dartz.dart';
 import 'package:linkora_app/core/error/failure.dart';
 import 'package:linkora_app/features/auth/data/data_source/remote_datasource/auth_remote_data_source.dart';
@@ -32,16 +30,6 @@ class AuthRemoteRepository implements IAuthRepository {
     try {
       await _authRemoteDataSource.registerUser(user);
       return const Right(null);
-    } catch (e) {
-      return Left(ApiFailure(message: e.toString()));
-    }
-  }
-
-  @override
-  Future<Either<Failure, String>> uploadProfilePicture(File file) async {
-    try {
-      final imageName = await _authRemoteDataSource.uploadProfilePicture(file);
-      return Right(imageName);
     } catch (e) {
       return Left(ApiFailure(message: e.toString()));
     }
