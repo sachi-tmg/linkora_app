@@ -11,16 +11,12 @@ class AuthApiModel extends Equatable {
   final String fullName;
   final String email;
   final String password;
-  final String? image;
-  final String? bio;
 
   const AuthApiModel({
     this.id,
     required this.fullName,
     required this.email,
     required this.password,
-    this.image,
-    this.bio,
   });
 
   factory AuthApiModel.fromJson(Map<String, dynamic> json) =>
@@ -34,7 +30,6 @@ class AuthApiModel extends Equatable {
       fullName: fullName,
       email: email,
       password: password,
-      bio: bio,
     );
   }
 
@@ -43,8 +38,6 @@ class AuthApiModel extends Equatable {
       fullName: entity.fullName,
       email: entity.email,
       password: entity.password,
-      image: entity.image,
-      bio: entity.bio,
     );
   }
 

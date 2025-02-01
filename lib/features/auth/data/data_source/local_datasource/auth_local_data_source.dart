@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:linkora_app/core/network/hive_service.dart';
 import 'package:linkora_app/features/auth/data/data_source/auth_data_source.dart';
 import 'package:linkora_app/features/auth/data/model/auth_hive_model.dart';
@@ -17,8 +15,6 @@ class AuthLocalDataSource implements IAuthDataSource {
       fullName: "",
       email: "",
       password: "",
-      image: null,
-      bio: null,
     ));
   }
 
@@ -43,10 +39,5 @@ class AuthLocalDataSource implements IAuthDataSource {
     } catch (e) {
       return Future.error(e);
     }
-  }
-
-  @override
-  Future<String> uploadProfilePicture(File file) {
-    throw UnimplementedError();
   }
 }
