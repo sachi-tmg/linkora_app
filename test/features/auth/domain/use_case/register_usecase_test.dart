@@ -75,5 +75,20 @@ void main() {
           result, const Left(ApiFailure(message: "Unexpected server error")));
       verify(() => mockAuthRepository.registerUser(any())).called(1);
     });
+
+    test('should successfully register a user and return Right(null)',
+        () async {
+      // Arrange
+      when(() => mockAuthRepository.registerUser(any()))
+          .thenAnswer((_) async => const Right(null));
+
+      // Act
+      final result = await usecase(registerParams);
+
+      // Assert
+      expect(result, const Right(null));
+      verify(() => mockAuthRepository.registerUser(any())).called(1);
+      verifyNoMoreInteractions(mockAuthRepository);
+    });
   });
 }
