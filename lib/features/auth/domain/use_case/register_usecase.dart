@@ -9,20 +9,17 @@ class RegisterUserParams extends Equatable {
   final String fullName;
   final String email;
   final String password;
-  final String? image;
 
   const RegisterUserParams({
     required this.fullName,
     required this.email,
     required this.password,
-    this.image,
   });
 
   const RegisterUserParams.initial({
     required this.fullName,
     required this.email,
     required this.password,
-    this.image,
   });
 
   @override
