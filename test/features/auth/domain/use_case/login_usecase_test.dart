@@ -97,4 +97,19 @@ void main() {
     verify(() => mockAuthRepository.loginUser(any(), any())).called(1);
     verifyNever(() => mockTokenSharedPrefs.saveToken(any()));
   });
+
+  test('returns Failure on server error', () async {
+    // Arrange
+    when(() => mockAuthRepository.loginUser(any(), any())).thenAnswer(
+        (_) async => const Left(ApiFailure(message: "Server error")));
+
+    // Act
+    final result = await loginUseCase(
+        const LoginParams(email: tEmail, password: tPassword));
+
+    // Assert
+    expect(result, const Left(ApiFailure(message: "Server error")));
+    verify(() => mockAuthRepository.loginUser(any(), any())).called(1);
+    verifyNever(() => mockTokenSharedPrefs.saveToken(any()));
+  });
 }
