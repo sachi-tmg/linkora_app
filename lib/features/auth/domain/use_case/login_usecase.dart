@@ -1,4 +1,3 @@
-import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:linkora_app/app/shared_prefs/token_shared_prefs.dart';
@@ -39,11 +38,11 @@ class LoginUseCase implements UsecaseWithParams<String, LoginParams> {
           try {
             await tokenSharedPrefs.saveToken(token);
             await tokenSharedPrefs.getToken();
-            final jwt = JWT.decode(token);
-            final payload = jwt.payload as Map<String, dynamic>;
-            final userId = payload['userId'] ?? payload['_id'];
+            // final jwt = JWT.decode(token);
+            // final payload = jwt.payload as Map<String, dynamic>;
+            // final userId = payload['userId'] ?? payload['_id'];
 
-            await tokenSharedPrefs.sharedPreferences.setString('id', userId);
+            // await tokenSharedPrefs.sharedPreferences.setString('id', userId);
 
             return Right(token);
           } catch (e) {
