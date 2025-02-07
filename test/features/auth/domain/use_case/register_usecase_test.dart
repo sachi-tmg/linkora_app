@@ -41,5 +41,39 @@ void main() {
           const Left(ApiFailure(message: "Email is already registered")));
       verify(() => mockAuthRepository.registerUser(any())).called(1);
     });
+
+    test('should return Failure when required fields are missing', () async {
+      // Arrange
+      const invalidParams = RegisterUserParams(
+        fullName: 'Sachi Tamang',
+        email: '',
+        password: 'sachi123',
+      );
+
+      when(() => mockAuthRepository.registerUser(any())).thenAnswer((_) async =>
+          const Left(ApiFailure(message: "One or more credentials are empty")));
+
+      // Act
+      final result = await usecase(invalidParams);
+
+      // Assert
+      expect(result,
+          const Left(ApiFailure(message: "One or more credentials are empty")));
+      verify(() => mockAuthRepository.registerUser(any())).called(1);
+    });
+
+    test('should return Failure when there is Api Failure', () async {
+      // Arrange
+      when(() => mockAuthRepository.registerUser(any())).thenAnswer((_) async =>
+          const Left(ApiFailure(message: "Unexpected server error")));
+
+      // Act
+      final result = await usecase(registerParams);
+
+      // Assert
+      expect(
+          result, const Left(ApiFailure(message: "Unexpected server error")));
+      verify(() => mockAuthRepository.registerUser(any())).called(1);
+    });
   });
 }
