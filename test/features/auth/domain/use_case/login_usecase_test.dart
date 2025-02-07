@@ -64,5 +64,38 @@ void main() {
       verify(() => mockAuthRepository.loginUser(tEmail, tPassword)).called(1);
       verifyZeroInteractions(mockTokenSharedPrefs);
     });
+
+    test('returns Failure when email is empty', () async {
+      // Arrange
+      const emptyEmailData = LoginParams(email: "", password: "sachi123");
+      when(() => mockAuthRepository.loginUser(any(), any())).thenAnswer(
+          (_) async =>
+              const Left(ApiFailure(message: "email cannot be empty")));
+
+      // Act
+      final result = await loginUseCase(emptyEmailData);
+
+      // Assert
+      expect(result, const Left(ApiFailure(message: "email cannot be empty")));
+      verify(() => mockAuthRepository.loginUser(any(), any())).called(1);
+      verifyNever(() => mockTokenSharedPrefs.saveToken(any()));
+    });
+
+    test('returns Failure when password is empty', () async {
+      // Arrange
+      const emptyPasswordData = LoginParams(email: "sachi", password: "");
+      when(() => mockAuthRepository.loginUser(any(), any())).thenAnswer(
+          (_) async =>
+              const Left(ApiFailure(message: "Password cannot be empty")));
+
+      // Act
+      final result = await loginUseCase(emptyPasswordData);
+
+      // Assert
+      expect(
+          result, const Left(ApiFailure(message: "Password cannot be empty")));
+      verify(() => mockAuthRepository.loginUser(any(), any())).called(1);
+      verifyNever(() => mockTokenSharedPrefs.saveToken(any()));
+    });
   });
 }
