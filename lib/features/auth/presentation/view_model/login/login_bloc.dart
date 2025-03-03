@@ -7,7 +7,7 @@ import 'package:linkora_app/core/common/snackbar/my_snackbar.dart';
 import 'package:linkora_app/features/auth/domain/use_case/login_usecase.dart';
 import 'package:linkora_app/features/auth/presentation/view_model/signup/register_bloc.dart';
 import 'package:linkora_app/features/blog/domain/repository/blog_repository.dart';
-import 'package:linkora_app/features/blog/presentation/view_model/blog_bloc.dart';
+import 'package:linkora_app/features/blog/presentation/view_model/view_blog/blog_bloc.dart';
 import 'package:linkora_app/features/home/presentation/view/home_view.dart';
 import 'package:linkora_app/features/regular_user/presentation/view_model/image_bloc.dart';
 import 'package:provider/provider.dart';
@@ -57,8 +57,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             builder: (context) => MultiProvider(
               providers: [
                 // Provide BlogRepository
-                Provider<BlogRepository>(
-                  create: (_) => getIt<BlogRepository>(),
+                Provider<IBlogRepository>(
+                  create: (_) => getIt<IBlogRepository>(),
                 ),
                 // Provide BlogBloc
                 BlocProvider.value(
