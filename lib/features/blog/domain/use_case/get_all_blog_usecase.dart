@@ -6,7 +6,7 @@ import 'package:linkora_app/features/blog/domain/repository/blog_repository.dart
 
 class GetLatestBlogsUseCase
     implements UsecaseWithParams<List<BlogEntity>, int> {
-  final BlogRepository repository;
+  final IBlogRepository repository;
 
   GetLatestBlogsUseCase(this.repository);
 
