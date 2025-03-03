@@ -1,4 +1,3 @@
-// lib/features/blog/presentation/bloc/blog_bloc.dart
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:linkora_app/features/blog/domain/entity/blog_entity.dart';

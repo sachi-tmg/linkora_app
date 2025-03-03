@@ -1,4 +1,3 @@
-// lib/features/blog/presentation/bloc/blog_state.dart
 part of 'blog_bloc.dart';
 
 abstract class BlogState extends Equatable {

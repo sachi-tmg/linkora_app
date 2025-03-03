@@ -1,8 +1,7 @@
-// lib/features/blog/presentation/widgets/blog_list_widget.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:linkora_app/features/blog/domain/entity/blog_entity.dart';
-import 'package:linkora_app/features/blog/presentation/view_model/blog_bloc.dart';
+import 'package:linkora_app/features/blog/presentation/view_model/view_blog/blog_bloc.dart';
 
 class BlogListWidget extends StatelessWidget {
   const BlogListWidget({super.key});
