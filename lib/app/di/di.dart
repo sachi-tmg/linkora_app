@@ -14,8 +14,11 @@ import 'package:linkora_app/features/auth/presentation/view_model/signup/registe
 import 'package:linkora_app/features/blog/data/data_source/remote_datasource/blog_remote_data_source.dart';
 import 'package:linkora_app/features/blog/data/repository/blog_remote_repository.dart';
 import 'package:linkora_app/features/blog/domain/repository/blog_repository.dart';
+import 'package:linkora_app/features/blog/domain/use_case/create_blog_usecase.dart';
 import 'package:linkora_app/features/blog/domain/use_case/get_all_blog_usecase.dart';
-import 'package:linkora_app/features/blog/presentation/view_model/blog_bloc.dart';
+import 'package:linkora_app/features/blog/domain/use_case/upload_blog_banner_usecase.dart';
+import 'package:linkora_app/features/blog/presentation/view_model/editor/create_blog_bloc.dart';
+import 'package:linkora_app/features/blog/presentation/view_model/view_blog/blog_bloc.dart';
 import 'package:linkora_app/features/home/presentation/view_model/home_cubit.dart';
 import 'package:linkora_app/features/onboarding/presentation/view_model/onboarding_bloc.dart';
 import 'package:linkora_app/features/regular_user/data/data_source/remote_datasource/regular_user_remote_data_source.dart';
@@ -129,24 +132,45 @@ _initBlogDependencies() async {
   getIt.registerLazySingleton<BlogRemoteDataSource>(
     () => BlogRemoteDataSource(
       dio: getIt<Dio>(),
+      tokenSharedPrefs: getIt<TokenSharedPrefs>(),
     ),
   );
 
   // Repository
-  getIt.registerLazySingleton<BlogRepository>(
-    () => BlogRepositoryImpl(getIt<Dio>()), // Pass positional argument
+  getIt.registerLazySingleton<IBlogRepository>(
+    () => BlogRepositoryImpl(
+        getIt<Dio>(), getIt<TokenSharedPrefs>()), // Pass positional argument
   );
 
   // Usecases
   getIt.registerLazySingleton<GetLatestBlogsUseCase>(
     () => GetLatestBlogsUseCase(
-        getIt<BlogRepository>()), // Pass positional argument
+        getIt<IBlogRepository>()), // Pass positional argument
   );
 
   // Bloc
   getIt.registerFactory<BlogBloc>(
     () => BlogBloc(
       getLatestBlogsUseCase: getIt<GetLatestBlogsUseCase>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<UploadBlogBannerUsecase>(
+    () => UploadBlogBannerUsecase(
+      getIt(),
+    ),
+  );
+
+  getIt.registerLazySingleton<CreateBlogUseCase>(
+    () => CreateBlogUseCase(
+      repository: getIt(),
+    ), // Pass positional argument
+  );
+
+  getIt.registerFactory<CreateBlogBloc>(
+    () => CreateBlogBloc(
+      createBlogUseCase: getIt<CreateBlogUseCase>(),
+      blogBannerUseCase: getIt<UploadBlogBannerUsecase>(),
     ),
   );
 }
