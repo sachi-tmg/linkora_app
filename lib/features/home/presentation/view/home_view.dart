@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:linkora_app/app/di/di.dart';
 import 'package:linkora_app/core/common/snackbar/my_snackbar.dart';
-import 'package:linkora_app/features/blog/presentation/view_model/blog_bloc.dart';
+import 'package:linkora_app/features/blog/presentation/view/create_blog_view.dart';
+import 'package:linkora_app/features/blog/presentation/view_model/editor/create_blog_bloc.dart';
+import 'package:linkora_app/features/blog/presentation/view_model/view_blog/blog_bloc.dart';
 import 'package:linkora_app/features/home/presentation/view_model/home_cubit.dart';
 import 'package:linkora_app/features/home/presentation/view_model/home_state.dart';
 
@@ -25,7 +27,6 @@ class HomeView extends StatelessWidget {
           final cubit = context.read<HomeCubit>();
           return Scaffold(
             appBar: AppBar(
-              title: Text(state.appBarTitle),
               centerTitle: true,
               automaticallyImplyLeading: false,
               actions: [
@@ -63,10 +64,16 @@ class HomeView extends StatelessWidget {
             ),
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                showMySnackBar(
-                  context: context,
-                  message: "Floating button clicked!",
-                  color: Colors.blueAccent,
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) {
+                      return BlocProvider<CreateBlogBloc>(
+                        create: (_) => getIt<CreateBlogBloc>(),
+                        child: const CreateBlogView(),
+                      );
+                    },
+                  ),
                 );
               },
               backgroundColor: Colors.blue,
