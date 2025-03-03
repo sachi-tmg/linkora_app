@@ -52,4 +52,34 @@ class HiveService {
   Future<void> close() async {
     await Hive.close();
   }
+
+  // Blog Queries
+  // Future<void> createBlog(BlogHiveModel blog) async {
+  //   var box = await Hive.openBox<BlogHiveModel>(HiveTableConstant.blogBox);
+  //   await box.put(blog.id, blog);
+  // }
+
+  // Future<void> updateBlog(BlogHiveModel blog) async {
+  //   var box = await Hive.openBox<BlogHiveModel>(HiveTableConstant.blogBox);
+  //   await box.put(blog.id, blog);
+  // }
+
+  // Future<void> deleteBlog(String blogId) async {
+  //   var box = await Hive.openBox<BlogHiveModel>(HiveTableConstant.blogBox);
+  //   await box.delete(blogId);
+  // }
+
+  // Future<List<BlogHiveModel>> getAllBlogs() async {
+  //   var box = await Hive.openBox<BlogHiveModel>(HiveTableConstant.blogBox);
+  //   return box.values.toList();
+  // }
+
+  // Future<BlogHiveModel?> getBlogById(String blogId) async {
+  //   var box = await Hive.openBox<BlogHiveModel>(HiveTableConstant.blogBox);
+  //   return box.get(blogId);
+  // }
+
+  Future<void> clearBlogBox() async {
+    await Hive.deleteBoxFromDisk(HiveTableConstant.blogBox);
+  }
 }
