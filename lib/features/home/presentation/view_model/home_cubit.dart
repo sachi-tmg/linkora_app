@@ -3,23 +3,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:linkora_app/app/di/di.dart';
 import 'package:linkora_app/features/auth/presentation/view/login_view.dart';
 import 'package:linkora_app/features/auth/presentation/view_model/login/login_bloc.dart';
-import 'package:linkora_app/features/dashboard/presentation/view/dashboard_view.dart';
-import 'package:linkora_app/features/dashboard/presentation/view_model/dashboard_bloc.dart';
+import 'package:linkora_app/features/blog/presentation/view/blog_page.dart';
 import 'package:linkora_app/features/home/presentation/view_model/home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit()
       : super(
-          HomeState(
+          const HomeState(
             selectedIndex: 0,
             appBarTitle: "Dashboard",
             views: [
-              BlocProvider(
-                create: (_) => getIt<DashboardBloc>(),
-                child: const DashboardView(),
-              ),
-              const Center(child: Text('Search')),
-              const Center(child: Text('Profile')),
+              BlogPage(), // BlogPage as the first view
+              Center(child: Text('Search')), // Placeholder for Search
+              Center(child: Text('Profile')), // Placeholder for Profile
             ],
           ),
         );
