@@ -11,6 +11,11 @@ import 'package:linkora_app/features/auth/domain/use_case/login_usecase.dart';
 import 'package:linkora_app/features/auth/domain/use_case/register_usecase.dart';
 import 'package:linkora_app/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:linkora_app/features/auth/presentation/view_model/signup/register_bloc.dart';
+import 'package:linkora_app/features/blog/data/data_source/remote_datasource/blog_remote_data_source.dart';
+import 'package:linkora_app/features/blog/data/repository/blog_remote_repository.dart';
+import 'package:linkora_app/features/blog/domain/repository/blog_repository.dart';
+import 'package:linkora_app/features/blog/domain/use_case/get_all_blog_usecase.dart';
+import 'package:linkora_app/features/blog/presentation/view_model/blog_bloc.dart';
 import 'package:linkora_app/features/home/presentation/view_model/home_cubit.dart';
 import 'package:linkora_app/features/onboarding/presentation/view_model/onboarding_bloc.dart';
 import 'package:linkora_app/features/regular_user/data/data_source/remote_datasource/regular_user_remote_data_source.dart';
@@ -33,6 +38,8 @@ Future<void> initDependencies() async {
   await _initDashboardDependencies();
   await _initRegisterDependencies();
   await _initLoginDependencies();
+
+  await _initBlogDependencies();
 }
 
 Future<void> _initSharedPreferences() async {
@@ -113,6 +120,37 @@ _initHomeDependencies() async {
   );
 }
 
+_initBlogDependencies() async {
+  // Local Data Source
+  // getIt.registerFactory<BlogLocalDataSource>(
+  //     () => BlogLocalDataSource(hiveService: getIt<HiveService>()));
+
+  // Remote Data Dource
+  getIt.registerLazySingleton<BlogRemoteDataSource>(
+    () => BlogRemoteDataSource(
+      dio: getIt<Dio>(),
+    ),
+  );
+
+  // Repository
+  getIt.registerLazySingleton<BlogRepository>(
+    () => BlogRepositoryImpl(getIt<Dio>()), // Pass positional argument
+  );
+
+  // Usecases
+  getIt.registerLazySingleton<GetLatestBlogsUseCase>(
+    () => GetLatestBlogsUseCase(
+        getIt<BlogRepository>()), // Pass positional argument
+  );
+
+  // Bloc
+  getIt.registerFactory<BlogBloc>(
+    () => BlogBloc(
+      getLatestBlogsUseCase: getIt<GetLatestBlogsUseCase>(),
+    ),
+  );
+}
+
 _initImageDependencies() async {
   // init local data source
   // getIt.registerLazySingleton(
@@ -174,8 +212,9 @@ _initLoginDependencies() async {
 
   getIt.registerFactory<LoginBloc>(
     () => LoginBloc(
+      blogBlog: getIt<BlogBloc>(),
       registerBloc: getIt<RegisterBloc>(),
-      homeCubit: getIt<HomeCubit>(),
+      // homeCubit: getIt<HomeCubit>(),
       imagebloc: getIt<ImageBloc>(),
       loginUseCase: getIt<LoginUseCase>(),
       tokenSharedPrefs: getIt<TokenSharedPrefs>(),
