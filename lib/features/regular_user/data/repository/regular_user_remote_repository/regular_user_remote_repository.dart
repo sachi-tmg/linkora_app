@@ -23,9 +23,22 @@ class RegularUserRemoteRepository implements IRegularUserRepository {
   }
 
   @override
-  Future<Either<Failure, void>> regularUser(RegularUserEntity ruser) async {
+  Future<Either<Failure, RegularUserEntity>> getRegularUser(
+      String username) async {
     try {
-      await _regularUserRemoteDataSource.regularUser(ruser);
+      final regularUser =
+          await _regularUserRemoteDataSource.getRegularUser(username);
+      return Right(regularUser);
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> updateRegularUser(
+      RegularUserEntity regularUser) async {
+    try {
+      await _regularUserRemoteDataSource.updateRegularUser(regularUser);
       return const Right(null);
     } catch (e) {
       return Left(ApiFailure(message: e.toString()));
