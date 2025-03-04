@@ -1,51 +1,62 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:linkora_app/features/regular_user/domain/entity/regular_user_entity.dart';
+
+part 'regular_user_api_model.g.dart';
 
 @JsonSerializable()
 class RegularUserApiModel extends Equatable {
-  final String userId;
-  final String? imageName;
+  @JsonKey(name: '_id')
+  final String? id;
+  final String profilePicture;
+  final String? bio;
+  final Map<String, String>? social_links;
+  final Map<String, int>? account_info;
+  final List<String>? blogs;
+  final String? dateCreated; // Nullable to avoid parsing issues
 
   const RegularUserApiModel({
-    required this.userId,
-    this.imageName,
+    this.id,
+    required this.profilePicture,
+    this.bio,
+    this.social_links,
+    this.account_info,
+    this.blogs,
+    this.dateCreated,
   });
 
-  const RegularUserApiModel.empty()
-      : userId = '',
-        imageName = '';
-
+  /// Custom `fromJson` method to handle potential `null` values safely
   factory RegularUserApiModel.fromJson(Map<String, dynamic> json) {
     return RegularUserApiModel(
-      userId: json['_id'],
-      imageName: json['profilePicture'],
+      id: json['_id'] as String?,
+      profilePicture: json['profilePicture'] ?? '',
+      bio: json['bio'] ?? '',
+      social_links: (json['social_links'] as Map<String, dynamic>?)?.map(
+            (key, value) =>
+                MapEntry(key, value ?? ''), // Ensure all values are Strings
+          ) ??
+          {},
+      account_info: (json['account_info'] as Map<String, dynamic>?)?.map(
+            (key, value) =>
+                MapEntry(key, value ?? 0), // Ensure all values are ints
+          ) ??
+          {},
+      blogs:
+          (json['blogs'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+              [],
+      dateCreated: json['dateCreated'], // Keep as nullable
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'imageName': imageName,
-    };
-  }
-
-  factory RegularUserApiModel.fromEntity(RegularUserEntity entity) =>
-      RegularUserApiModel(
-        userId: entity.userId,
-        imageName: entity.profilePicture,
-      );
-
-  // To Entity
-  RegularUserEntity toEntity() => RegularUserEntity(
-        userId: userId,
-        profilePicture: imageName,
-      );
-
-  static List<RegularUserEntity> toEntityList(
-          List<RegularUserApiModel> models) =>
-      models.map((model) => model.toEntity()).toList();
+  Map<String, dynamic> toJson() => _$RegularUserApiModelToJson(this);
 
   @override
-  // TODO: implement props
-  List<Object?> get props => [userId, imageName];
+  List<Object?> get props => [
+        id,
+        profilePicture,
+        bio,
+        social_links,
+        account_info,
+        blogs,
+        dateCreated,
+      ];
 }
