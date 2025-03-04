@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:linkora_app/app/di/di.dart';
-import 'package:linkora_app/core/common/snackbar/my_snackbar.dart';
 import 'package:linkora_app/features/blog/presentation/view/create_blog_view.dart';
 import 'package:linkora_app/features/blog/presentation/view_model/editor/create_blog_bloc.dart';
 import 'package:linkora_app/features/blog/presentation/view_model/view_blog/blog_bloc.dart';
 import 'package:linkora_app/features/home/presentation/view_model/home_cubit.dart';
 import 'package:linkora_app/features/home/presentation/view_model/home_state.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -26,23 +30,6 @@ class HomeView extends StatelessWidget {
         builder: (context, state) {
           final cubit = context.read<HomeCubit>();
           return Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              automaticallyImplyLeading: false,
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.logout),
-                  onPressed: () {
-                    showMySnackBar(
-                      context: context,
-                      message: "logging out..",
-                      color: Colors.redAccent,
-                    );
-                    context.read<HomeCubit>().logout(context);
-                  },
-                ),
-              ],
-            ),
             body: state.views[state.selectedIndex],
             bottomNavigationBar: BottomNavigationBar(
               items: const <BottomNavigationBarItem>[
@@ -63,8 +50,8 @@ class HomeView extends StatelessWidget {
               onTap: cubit.onTabTapped,
             ),
             floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                Navigator.push(
+              onPressed: () async {
+                final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) {

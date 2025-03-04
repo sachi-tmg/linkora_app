@@ -9,7 +9,6 @@ import 'package:linkora_app/features/auth/presentation/view_model/signup/registe
 import 'package:linkora_app/features/blog/domain/repository/blog_repository.dart';
 import 'package:linkora_app/features/blog/presentation/view_model/view_blog/blog_bloc.dart';
 import 'package:linkora_app/features/home/presentation/view/home_view.dart';
-import 'package:linkora_app/features/regular_user/presentation/view_model/image_bloc.dart';
 import 'package:provider/provider.dart';
 
 part 'login_event.dart';
@@ -18,7 +17,6 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   // final HomeCubit _homeCubit;
   final LoginUseCase _loginUseCase;
-  final ImageBloc _imageBloc;
   final BlogBloc _blogBloc;
   final TokenSharedPrefs _tokenSharedPrefs;
 
@@ -26,12 +24,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     required RegisterBloc registerBloc,
     // required HomeCubit homeCubit,
     required LoginUseCase loginUseCase,
-    required ImageBloc imagebloc,
     required BlogBloc blogBlog,
     required TokenSharedPrefs tokenSharedPrefs,
   })  : // _homeCubit = homeCubit,
         _loginUseCase = loginUseCase,
-        _imageBloc = imagebloc,
         _tokenSharedPrefs = tokenSharedPrefs,
         _blogBloc = blogBlog,
         super(LoginState.initial()) {
@@ -72,19 +68,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       },
     );
 
-    on<NavigateImageScreenEvent>(
-      (event, emit) {
-        Navigator.pushReplacement(
-          event.context,
-          MaterialPageRoute(
-            builder: (context) => BlocProvider.value(
-              value: _imageBloc,
-              child: event.destination,
-            ),
-          ),
-        );
-      },
-    );
+    // on<NavigateImageScreenEvent>(
+    //   (event, emit) {
+    //     Navigator.pushReplacement(
+    //       event.context,
+    //       MaterialPageRoute(
+    //         builder: (context) => BlocProvider.value(
+    //           value: _imageBloc,
+    //           child: event.destination,
+    //         ),
+    //       ),
+    //     );
+    //   },
+    // );
 
     on<LoginUserEvent>(
       (event, emit) async {
@@ -107,6 +103,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           },
           (token) async {
             await _tokenSharedPrefs.saveToken(token);
+
+            // Get userId and username from SharedPreferences
+            final userId = await _tokenSharedPrefs.getUserId();
+            final username = await _tokenSharedPrefs.getUsername();
             add(
               NavigateHomeScreenEvent(
                 context: event.context,

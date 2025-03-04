@@ -42,8 +42,11 @@ class LoginUseCase implements UsecaseWithParams<String, LoginParams> {
             final jwt = JWT.decode(token);
             final payload = jwt.payload as Map<String, dynamic>;
             final userId = payload['userId'] ?? payload['_id'];
+            final username = payload['username'] ?? '';
 
             await tokenSharedPrefs.sharedPreferences.setString('id', userId);
+            await tokenSharedPrefs.sharedPreferences
+                .setString('username', username);
 
             return Right(token);
           } catch (e) {

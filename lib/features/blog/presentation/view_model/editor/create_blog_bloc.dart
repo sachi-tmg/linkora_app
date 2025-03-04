@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:linkora_app/features/blog/data/model/blog_api_model.dart';
 import 'package:linkora_app/features/blog/domain/use_case/create_blog_usecase.dart';
 import 'package:linkora_app/features/blog/domain/use_case/upload_blog_banner_usecase.dart';
@@ -18,14 +19,15 @@ class CreateBlogBloc extends Bloc<CreateBlogEvent, CreateBlogState> {
     required UploadBlogBannerUsecase blogBannerUseCase,
   })  : _createBlogUseCase = createBlogUseCase,
         _blogBannerUsecase = blogBannerUseCase,
-        super(const CreateBlogInitial()) {
+        super(const CreateBlogInitial(imageName: '')) {
     on<CreateBlogRequested>(_onCreateBlogRequested);
     on<UploadBanner>(_onUploadBanner);
   }
 
   Future<void> _onCreateBlogRequested(
       CreateBlogRequested event, Emitter<CreateBlogState> emit) async {
-    emit(const BlogLoading());
+    print("Creating blog with image in bloc: ${state.imageName}");
+    emit(BlogLoading(imageName: state.imageName));
     final blog = BlogApiModel(
       title: event.blog.title,
       description: event.blog.description,
@@ -36,10 +38,16 @@ class CreateBlogBloc extends Bloc<CreateBlogEvent, CreateBlogState> {
     );
 
     final result = await _createBlogUseCase(blog);
-    result.fold((failure) => emit(BlogError(message: failure.message)),
-        (blogId) {
-      emit(BlogCreated(blogId: blogId));
-    });
+    result.fold(
+      (failure) {
+        emit(BlogError(
+            message: 'Error creating blog with image: ${failure.message}',
+            imageName: state.imageName));
+      },
+      (blogId) {
+        emit(BlogCreated(blogId: blogId, imageName: state.imageName));
+      },
+    );
   }
 
   Future<void> _onUploadBanner(
@@ -51,9 +59,11 @@ class CreateBlogBloc extends Bloc<CreateBlogEvent, CreateBlogState> {
       UploadBlogBannerParams(file: event.file),
     );
     result.fold(
-      (failure) =>
-          emit(BlogError(message: failure.message, imageName: state.imageName)),
-      (imageName) => emit(CreateBlogInitial(imageName: imageName)),
-    );
+        (failure) => emit(
+            BlogError(message: failure.message, imageName: state.imageName)),
+        (imageName) {
+      emit(CreateBlogInitial(imageName: imageName));
+      print("Image uploaded successfully in bloc: $imageName");
+    });
   }
 }

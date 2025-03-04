@@ -23,8 +23,11 @@ import 'package:linkora_app/features/home/presentation/view_model/home_cubit.dar
 import 'package:linkora_app/features/onboarding/presentation/view_model/onboarding_bloc.dart';
 import 'package:linkora_app/features/regular_user/data/data_source/remote_datasource/regular_user_remote_data_source.dart';
 import 'package:linkora_app/features/regular_user/data/repository/regular_user_remote_repository/regular_user_remote_repository.dart';
-import 'package:linkora_app/features/regular_user/domain/use_case/regular_user_usecase.dart';
-import 'package:linkora_app/features/regular_user/presentation/view_model/image_bloc.dart';
+import 'package:linkora_app/features/regular_user/domain/respository/regular_user_repository.dart';
+import 'package:linkora_app/features/regular_user/domain/use_case/get_regular_user_usecase.dart';
+import 'package:linkora_app/features/regular_user/domain/use_case/update_regular_user_usecase.dart';
+import 'package:linkora_app/features/regular_user/domain/use_case/upload_profile_picture_usecase.dart';
+import 'package:linkora_app/features/regular_user/presentation/view_model/profile_bloc.dart';
 import 'package:linkora_app/features/splash/presentation/view_model/splash_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,6 +44,7 @@ Future<void> initDependencies() async {
   await _initDashboardDependencies();
   await _initRegisterDependencies();
   await _initLoginDependencies();
+  await _initRegularUserDependencies();
 
   await _initBlogDependencies();
 }
@@ -117,6 +121,46 @@ _initDashboardDependencies() async {
   // );
 }
 
+_initRegularUserDependencies() async {
+  // Remote Data Dource
+  // getIt.registerLazySingleton<RegularUserRemoteDataSource>(
+  //   () => RegularUserRemoteDataSource(
+  //     getIt<Dio>(),
+  //     getIt<TokenSharedPrefs>(),
+  //   ),
+  // );
+
+  // Repository
+  getIt.registerLazySingleton<IRegularUserRepository>(
+    () => RegularUserRemoteRepository(
+        getIt<RegularUserRemoteDataSource>()), // Pass positional argument
+  );
+
+  // Usecases
+  getIt.registerLazySingleton<GetRegularUserUseCase>(
+    () => GetRegularUserUseCase(
+        getIt<IRegularUserRepository>()), // Pass positional argument
+  );
+
+  getIt.registerLazySingleton<UploadProfilePictureUsecase>(
+    () => UploadProfilePictureUsecase(
+        getIt<IRegularUserRepository>()), // Pass positional argument
+  );
+
+  getIt.registerLazySingleton<UpdateRegularUserUseCase>(
+    () => UpdateRegularUserUseCase(
+        getIt<IRegularUserRepository>()), // Pass positional argument
+  );
+
+  getIt.registerFactory<ProfileBloc>(
+    () => ProfileBloc(
+        getRegularUserUseCase: getIt<GetRegularUserUseCase>(),
+        updateRegularUserUseCase: getIt<UpdateRegularUserUseCase>(),
+        uploadProfilePictureUseCase: getIt<UploadProfilePictureUsecase>(),
+        tokenSharedPrefs: getIt<TokenSharedPrefs>()),
+  );
+}
+
 _initHomeDependencies() async {
   getIt.registerFactory<HomeCubit>(
     () => HomeCubit(),
@@ -138,8 +182,8 @@ _initBlogDependencies() async {
 
   // Repository
   getIt.registerLazySingleton<IBlogRepository>(
-    () => BlogRepositoryImpl(
-        getIt<Dio>(), getIt<TokenSharedPrefs>()), // Pass positional argument
+    () => BlogRepositoryImpl(getIt<Dio>(), getIt<TokenSharedPrefs>(),
+        getIt<BlogRemoteDataSource>()), // Pass positional argument
   );
 
   // Usecases
@@ -182,7 +226,7 @@ _initImageDependencies() async {
   // );
 
   getIt.registerLazySingleton<RegularUserRemoteDataSource>(
-    () => RegularUserRemoteDataSource(getIt<Dio>()),
+    () => RegularUserRemoteDataSource(getIt<Dio>(), getIt<TokenSharedPrefs>()),
   );
 
   // init local repository
@@ -201,25 +245,25 @@ _initImageDependencies() async {
   //   ),
   // );
 
-  getIt.registerLazySingleton<RegularUserUsecase>(
-    () => RegularUserUsecase(
-      getIt<RegularUserRemoteRepository>(),
-    ),
-  );
+  // getIt.registerLazySingleton<RegularUserUsecase>(
+  //   () => RegularUserUsecase(
+  //     getIt<RegularUserRemoteRepository>(),
+  //   ),
+  // );
 
-  getIt.registerLazySingleton<UploadImageUsecaseP>(
-    () => UploadImageUsecaseP(
-      getIt<RegularUserRemoteRepository>(),
-    ),
-  );
+  // getIt.registerLazySingleton<UploadImageUsecaseP>(
+  //   () => UploadImageUsecaseP(
+  //     getIt<RegularUserRemoteRepository>(),
+  //   ),
+  // );
 
-  getIt.registerFactory<ImageBloc>(
-    () => ImageBloc(
-      homeCubit: getIt<HomeCubit>(),
-      regularUserUsecase: getIt<RegularUserUsecase>(),
-      uploadImageUsecaseP: getIt<UploadImageUsecaseP>(),
-    ),
-  );
+  // getIt.registerFactory<ImageBloc>(
+  //   () => ImageBloc(
+  //     homeCubit: getIt<HomeCubit>(),
+  //     regularUserUsecase: getIt<RegularUserUsecase>(),
+  //     uploadImageUsecaseP: getIt<UploadImageUsecaseP>(),
+  //   ),
+  // );
 }
 
 _initLoginDependencies() async {
@@ -239,7 +283,7 @@ _initLoginDependencies() async {
       blogBlog: getIt<BlogBloc>(),
       registerBloc: getIt<RegisterBloc>(),
       // homeCubit: getIt<HomeCubit>(),
-      imagebloc: getIt<ImageBloc>(),
+      // imagebloc: getIt<ImageBloc>(),
       loginUseCase: getIt<LoginUseCase>(),
       tokenSharedPrefs: getIt<TokenSharedPrefs>(),
     ),

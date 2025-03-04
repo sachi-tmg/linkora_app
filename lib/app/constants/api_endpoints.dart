@@ -10,8 +10,9 @@ class ApiEndpoints {
   static const String register = "user/registerUser";
 
   // Profile Routes
-  static const String createRegularUser = "regular-users/save";
+  static const String getRegularUser = "regular-users/get-profile";
   static const String uploadImage = "regular-users/uploadImage";
+  static const String updateRegularUser = "regular-users/save";
 
   //blog routes
   static const String createBlogs = "blog/create-blog";
