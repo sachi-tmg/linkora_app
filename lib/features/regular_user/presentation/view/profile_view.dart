@@ -8,6 +8,7 @@ import 'package:linkora_app/app/di/di.dart';
 import 'package:linkora_app/features/auth/presentation/view/login_view.dart';
 import 'package:linkora_app/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:linkora_app/features/regular_user/presentation/view_model/profile_bloc.dart';
+import 'package:linkora_app/features/regular_user/presentation/widget/profile_blog_list_widget.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -35,20 +36,30 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     // Trigger LoadProfile event directly from the Bloc
     context.read<ProfileBloc>().add(const LoadProfile(username: ''));
+    context.read<ProfileBloc>().add(const LoadUserBlogs(page: 1, draft: false));
   }
 
   Future<File?> _compressImage(File file) async {
     final filePath = file.absolute.path;
+    final fileExtension = filePath.split('.').last.toLowerCase();
 
-    // Define a compressed file path
-    final lastIndex = filePath.lastIndexOf(RegExp(r'.jp'));
-    final splitPath = filePath.substring(0, lastIndex);
-    final compressedPath = '${splitPath}_compressed.jpg';
+    // Determine the correct format based on the original file type
+    CompressFormat format;
+    if (fileExtension == 'png') {
+      format = CompressFormat.png;
+    } else if (fileExtension == 'webp') {
+      format = CompressFormat.webp;
+    } else {
+      format = CompressFormat.jpeg; // Default to JPEG
+    }
+
+    final compressedPath = '${filePath}_compressed.$fileExtension';
 
     final result = await FlutterImageCompress.compressAndGetFile(
       filePath,
       compressedPath,
-      quality: 70, // Adjust quality (lower means smaller file size)
+      quality: 70,
+      format: format,
     );
 
     return result != null ? File(result.path) : file;
@@ -240,9 +251,13 @@ class _ProfilePageState extends State<ProfilePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              state.regularUser?.username ?? 'Username',
+                              state.regularUser?.fullName ?? 'FullName',
                               style: const TextStyle(
                                   fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              state.regularUser?.username ?? 'Username',
+                              style: const TextStyle(fontSize: 18),
                             ),
                             const SizedBox(height: 8),
                             Row(
@@ -289,7 +304,10 @@ class _ProfilePageState extends State<ProfilePage> {
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 16),
-        Text('Your stats and blogs will be displayed here.'),
+        SizedBox(
+          height: 580, // Adjust as needed
+          child: ProfileBlogListWidget(),
+        ),
       ],
     );
   }
