@@ -5,6 +5,7 @@ class ProfileState extends Equatable {
   final bool isSuccess;
   final String? imageName;
   final RegularUserEntity? regularUser;
+  final List<BlogEntity>? blogs;
   final String? errorMessage;
 
   const ProfileState({
@@ -12,6 +13,7 @@ class ProfileState extends Equatable {
     required this.isSuccess,
     this.imageName,
     this.regularUser,
+    this.blogs,
     this.errorMessage,
   });
 
@@ -20,6 +22,7 @@ class ProfileState extends Equatable {
         isSuccess = false,
         imageName = null,
         regularUser = null,
+        blogs = null,
         errorMessage = null;
 
   ProfileState copyWith({
@@ -27,6 +30,7 @@ class ProfileState extends Equatable {
     bool? isSuccess,
     String? imageName,
     RegularUserEntity? regularUser,
+    List<BlogEntity>? blogs,
     String? errorMessage,
   }) {
     return ProfileState(
@@ -34,6 +38,7 @@ class ProfileState extends Equatable {
       isSuccess: isSuccess ?? this.isSuccess,
       imageName: imageName ?? this.imageName,
       regularUser: regularUser ?? this.regularUser,
+      blogs: blogs ?? this.blogs,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
@@ -44,6 +49,7 @@ class ProfileState extends Equatable {
         isSuccess,
         imageName,
         regularUser,
+        blogs,
         errorMessage,
       ];
 }

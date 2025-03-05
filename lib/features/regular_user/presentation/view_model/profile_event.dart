@@ -16,6 +16,16 @@ class LoadProfile extends ProfileEvent {
   List<Object?> get props => [username];
 }
 
+class LoadUserBlogs extends ProfileEvent {
+  final int page;
+  final bool draft;
+
+  const LoadUserBlogs({this.page = 1, this.draft = false});
+
+  @override
+  List<Object?> get props => [page, draft];
+}
+
 class UpdateProfile extends ProfileEvent {
   final String username;
   final String bio;
