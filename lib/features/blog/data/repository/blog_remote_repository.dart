@@ -5,15 +5,18 @@ import 'package:dio/dio.dart';
 import 'package:linkora_app/app/constants/api_endpoints.dart';
 import 'package:linkora_app/app/shared_prefs/token_shared_prefs.dart';
 import 'package:linkora_app/core/error/failure.dart';
+import 'package:linkora_app/features/blog/data/data_source/remote_datasource/blog_remote_data_source.dart';
 import 'package:linkora_app/features/blog/data/model/blog_api_model.dart';
 import 'package:linkora_app/features/blog/domain/entity/blog_entity.dart';
 import 'package:linkora_app/features/blog/domain/repository/blog_repository.dart';
 
-class BlogRepositoryImpl implements IBlogRepository {
+class BlogRemoteRepository implements IBlogRepository {
   final Dio dioClient;
-  final TokenSharedPrefs tokenSharedPrefs; // Added to access token prefs
+  final TokenSharedPrefs tokenSharedPrefs;
+  final BlogRemoteDataSource _remoteDataSource;
 
-  BlogRepositoryImpl(this.dioClient, this.tokenSharedPrefs);
+  BlogRemoteRepository(
+      this.dioClient, this.tokenSharedPrefs, this._remoteDataSource);
 
   Future<String?> _getToken() async {
     final tokenResult = await tokenSharedPrefs.getToken();
@@ -69,23 +72,22 @@ class BlogRepositoryImpl implements IBlogRepository {
   @override
   Future<Either<Failure, String>> uploadBlogPicture(File file) async {
     try {
-      // Get the token
-      FormData formData = FormData.fromMap({
-        'blogBanner': await MultipartFile.fromFile(file.path),
-      });
-
-      final response = await dioClient.post(
-        ApiEndpoints.uploadBanner,
-        data: formData,
-      );
-      if (response.statusCode == 200) {
-        final imageName =
-            response.data['filename']; // Match backend response key
-        return Right(imageName);
-      } else {
-        return const Left(ApiFailure(message: "Failed to upload image"));
-      }
+      final imageName = await _remoteDataSource.uploadBlogPicture(file);
+      return Right(imageName);
     } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, BlogEntity>> getBlog(String blogId) async {
+    try {
+      print("Fetching blog in repository with ID: $blogId");
+      final blog = await _remoteDataSource.getBlog(blogId);
+      print("Blog fetched successfully: ${blog.toEntity()}");
+      return Right(blog.toEntity());
+    } catch (e) {
+      print("Error fetching blog: $e");
       return Left(ApiFailure(message: e.toString()));
     }
   }
