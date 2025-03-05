@@ -12,4 +12,6 @@ abstract class IBlogDataSource {
 
   //uploading Banner
   Future<String> uploadBlogPicture(File file);
+
+  Future<BlogApiModel> getBlog(String blogId);
 }
