@@ -17,4 +17,7 @@ abstract class IBlogRepository {
 
   Future<Either<Failure, List<BlogEntity>>> searchBlogs(String query,
       {int page = 1});
+
+  Future<Either<Failure, List<BlogEntity>>> getUserWrittenBlogs(
+      {int page = 1, bool draft = false});
 }
