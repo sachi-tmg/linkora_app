@@ -155,14 +155,15 @@ class _CreateBlogViewState extends State<CreateBlogView> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  // Content Field
+                  // Content Field (now List<String>)
                   TextFormField(
                     controller: _contentController,
                     maxLines: 10,
                     decoration: const InputDecoration(
-                      labelText: 'Content',
+                      labelText: 'Content (comma separated)',
                       border: OutlineInputBorder(),
                     ),
+                    onChanged: (value) {},
                   ),
                   const SizedBox(height: 20),
                   // Tags Field
@@ -181,27 +182,19 @@ class _CreateBlogViewState extends State<CreateBlogView> {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            print(
-                                "Image Name from create blog view: ${state.imageName}");
-
                             final blog = BlogApiModel(
                               title: _titleController.text,
                               description: _descriptionController.text,
-                              blogPicture: state.imageName ??
-                                  '', // Use imageName from state
-                              content: _contentController.text,
+                              blogPicture: state.imageName,
+                              content: _contentController.text.split(
+                                  ','), // Convert content to a List<String>
                               tags: _tagsController.text.split(','),
                               draft: true,
                             );
 
-                            print(
-                                "Blog being created with image before sending to bloc: ${blog.blogPicture}");
-
                             context
                                 .read<CreateBlogBloc>()
                                 .add(CreateBlogRequested(blog: blog));
-                            print(
-                                "Blog being created with image: ${blog.blogPicture}");
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey,
@@ -216,9 +209,9 @@ class _CreateBlogViewState extends State<CreateBlogView> {
                             final blog = BlogApiModel(
                               title: _titleController.text,
                               description: _descriptionController.text,
-                              blogPicture: state.imageName ??
-                                  '', // Use imageName from state
-                              content: _contentController.text,
+                              blogPicture: state.imageName,
+                              content: _contentController.text.split(
+                                  ','), // Convert content to a List<String>
                               tags: _tagsController.text.split(','),
                               draft: false,
                             );

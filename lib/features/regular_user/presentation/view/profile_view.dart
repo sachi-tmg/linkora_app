@@ -5,15 +5,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:linkora_app/app/di/di.dart';
-import 'package:linkora_app/app/shared_prefs/token_shared_prefs.dart';
 import 'package:linkora_app/features/auth/presentation/view/login_view.dart';
 import 'package:linkora_app/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:linkora_app/features/regular_user/presentation/view_model/profile_bloc.dart';
 
 class ProfilePage extends StatefulWidget {
-  final TokenSharedPrefs tokenSharedPrefs;
-
-  const ProfilePage({super.key, required this.tokenSharedPrefs});
+  const ProfilePage({super.key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -36,13 +33,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    widget.tokenSharedPrefs.getUsername().then((either) {
-      either.fold(
-        (failure) => debugPrint('Error loading username: $failure'),
-        (username) =>
-            context.read<ProfileBloc>().add(LoadProfile(username: username)),
-      );
-    });
+    // Trigger LoadProfile event directly from the Bloc
+    context.read<ProfileBloc>().add(const LoadProfile(username: ''));
   }
 
   Future<File?> _compressImage(File file) async {
@@ -145,16 +137,14 @@ class _ProfilePageState extends State<ProfilePage> {
         automaticallyImplyLeading: false,
         backgroundColor: const Color.fromARGB(255, 61, 155, 233),
         actions: [
-          // Logout button
           IconButton(
-            icon: const Icon(Icons.logout, size: 20), // Small logout icon
+            icon: const Icon(Icons.logout, size: 20),
             onPressed: _onLogoutPressed,
           ),
         ],
-      ), // Blue AppBar
+      ),
       body: Container(
-        color:
-            const Color.fromARGB(255, 234, 242, 248), // Bluish-white background
+        color: const Color.fromARGB(255, 234, 242, 248),
         child: SafeArea(
           child: BlocBuilder<ProfileBloc, ProfileState>(
             builder: (context, state) {
@@ -173,7 +163,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                 state.regularUser?.socialLinks.forEach((key, value) {
                   if (_socialLinksControllers.containsKey(key)) {
-                    _socialLinksControllers[key]!.text = value ?? '';
+                    _socialLinksControllers[key]!.text = value;
                   }
                 });
               }
@@ -185,7 +175,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     Row(
                       children: [
-                        // Stack to overlay camera icon on profile picture
                         Stack(
                           alignment: Alignment.bottomRight,
                           children: [
@@ -201,8 +190,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         title: const Text('Camera'),
                                         onTap: () {
                                           _browseImage(ImageSource.camera);
-                                          Navigator.pop(
-                                              context); // Close the modal after selecting camera
+                                          Navigator.pop(context);
                                         },
                                       ),
                                       ListTile(
@@ -210,8 +198,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         title: const Text('Gallery'),
                                         onTap: () {
                                           _browseImage(ImageSource.gallery);
-                                          Navigator.pop(
-                                              context); // Close the modal after selecting gallery
+                                          Navigator.pop(context);
                                         },
                                       ),
                                     ],
@@ -263,8 +250,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ElevatedButton(
                                   onPressed: () {
                                     setState(() {
-                                      _showStats = true; // Show Stats section
-                                      _isEditing = false; // Exit edit mode
+                                      _showStats = true;
+                                      _isEditing = false;
                                     });
                                   },
                                   child: const Text("View Stats"),
