@@ -1,6 +1,7 @@
 class RegularUserEntity {
   final String? userId;
   final String? username;
+  final String? fullName;
   final String profilePicture;
   final String? bio;
   final Map<String, String> socialLinks;
@@ -12,6 +13,7 @@ class RegularUserEntity {
   RegularUserEntity({
     this.userId,
     this.username,
+    this.fullName,
     required this.profilePicture,
     this.bio,
     required this.socialLinks,
@@ -25,6 +27,7 @@ class RegularUserEntity {
     return RegularUserEntity(
       userId: json['user']?['_id'] as String?,
       username: json['user']?['username'] as String?,
+      fullName: json['user']?['fullName'] ?? '',
       profilePicture: json['user']?['regularUser']?['profilePicture'] ?? '',
       bio: json['user']?['regularUser']?['bio'] ?? '',
       socialLinks: {
