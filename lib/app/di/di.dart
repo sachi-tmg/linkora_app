@@ -17,8 +17,10 @@ import 'package:linkora_app/features/blog/domain/repository/blog_repository.dart
 import 'package:linkora_app/features/blog/domain/use_case/create_blog_usecase.dart';
 import 'package:linkora_app/features/blog/domain/use_case/get_all_blog_usecase.dart';
 import 'package:linkora_app/features/blog/domain/use_case/get_blog_usecase.dart';
+import 'package:linkora_app/features/blog/domain/use_case/search_blog_usecase.dart';
 import 'package:linkora_app/features/blog/domain/use_case/upload_blog_banner_usecase.dart';
 import 'package:linkora_app/features/blog/presentation/view_model/editor/create_blog_bloc.dart';
+import 'package:linkora_app/features/blog/presentation/view_model/search_blogs/search_blogs_bloc.dart';
 import 'package:linkora_app/features/blog/presentation/view_model/view_blog/blog_bloc.dart';
 import 'package:linkora_app/features/home/presentation/view_model/home_cubit.dart';
 import 'package:linkora_app/features/onboarding/presentation/view_model/onboarding_bloc.dart';
@@ -217,12 +219,20 @@ _initBlogDependencies() async {
     ), // Pass positional argument
   );
 
+  getIt.registerLazySingleton<SearchBlogsUseCase>(() => SearchBlogsUseCase(
+        getIt<IBlogRepository>(),
+      ));
+
   getIt.registerFactory<CreateBlogBloc>(
     () => CreateBlogBloc(
       createBlogUseCase: getIt<CreateBlogUseCase>(),
       blogBannerUseCase: getIt<UploadBlogBannerUsecase>(),
     ),
   );
+
+  getIt.registerFactory<SearchBlogsBloc>(() => SearchBlogsBloc(
+        searchBlogsUseCase: getIt<SearchBlogsUseCase>(),
+      ));
 }
 
 _initImageDependencies() async {

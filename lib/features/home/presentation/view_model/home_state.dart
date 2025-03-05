@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:linkora_app/app/di/di.dart';
 import 'package:linkora_app/features/blog/presentation/view/blog_page.dart';
+import 'package:linkora_app/features/blog/presentation/view/search_blogs_view.dart';
+import 'package:linkora_app/features/blog/presentation/view_model/search_blogs/search_blogs_bloc.dart';
 import 'package:linkora_app/features/blog/presentation/view_model/view_blog/blog_bloc.dart';
 import 'package:linkora_app/features/regular_user/presentation/view/profile_view.dart';
 import 'package:linkora_app/features/regular_user/presentation/view_model/profile_bloc.dart';
@@ -22,7 +24,10 @@ class HomeState extends Equatable {
           create: (context) => getIt<BlogBloc>(),
           child: const BlogPage(),
         ),
-        const Center(child: Text('Search')),
+        BlocProvider(
+          create: (context) => getIt<SearchBlogsBloc>(),
+          child: const SearchBlogsView(),
+        ),
         BlocProvider(
           create: (context) => getIt<ProfileBloc>(),
           child: const ProfilePage(),

@@ -132,4 +132,27 @@ class BlogRemoteDataSource implements IBlogDataSource {
       throw Exception("Unexpected error: $e");
     }
   }
+
+  Future<List<BlogEntity>> searchBlogs(String query, {int page = 1}) async {
+    try {
+      final response = await _dio.post(
+        ApiEndpoints.searchBlogs,
+        data: {"query": query, "page": page},
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> blogsJson = response.data['blogs'];
+        final List<BlogEntity> blogs = blogsJson
+            .map((blogJson) => BlogApiModel.fromJson(blogJson).toEntity())
+            .toList();
+        return blogs;
+      } else {
+        throw Exception(response.statusMessage);
+      }
+    } on DioException catch (e) {
+      throw Exception(e);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }

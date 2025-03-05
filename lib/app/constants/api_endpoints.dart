@@ -19,4 +19,5 @@ class ApiEndpoints {
   static const String uploadBanner = "blog/uploadBanner";
   static const String latestBlogs = "blog/latest-blogs";
   static const String viewFullBlog = "blog/blog-view";
+  static const String searchBlogs = "blog/search-blogs";
 }
