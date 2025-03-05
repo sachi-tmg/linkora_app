@@ -37,7 +37,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     try {
       // Get token and username from SharedPreferences
-      final token = await _tokenSharedPrefs.getToken();
       final usernameResult = await _tokenSharedPrefs.getUsername();
 
       // Handle the result of getting the username from SharedPreferences

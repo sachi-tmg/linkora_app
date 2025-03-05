@@ -51,7 +51,6 @@ class BlogRemoteDataSource implements IBlogDataSource {
   Future<String> createBlog(BlogApiModel blog) async {
     try {
       final token = await _getToken();
-      print("Token: $token");
       final response = await _dio.post(
         ApiEndpoints.createBlogs,
         data: blog.toJson(),
@@ -75,9 +74,15 @@ class BlogRemoteDataSource implements IBlogDataSource {
   @override
   Future<String> uploadBlogPicture(File file) async {
     try {
-      FormData formData = FormData.fromMap({
-        'blogBanner': await MultipartFile.fromFile(file.path),
-      });
+      String fileName = file.path;
+      FormData formData = FormData.fromMap(
+        {
+          'blogBanner': await MultipartFile.fromFile(
+            file.path,
+            filename: fileName,
+          ),
+        },
+      );
 
       Response response = await _dio.post(
         ApiEndpoints.uploadBanner,
@@ -85,7 +90,7 @@ class BlogRemoteDataSource implements IBlogDataSource {
       );
 
       if (response.statusCode == 200) {
-        final imageName = response.data['fileName'];
+        final imageName = response.data['filename'];
         return imageName;
       } else {
         throw Exception(response.statusMessage);
@@ -94,6 +99,37 @@ class BlogRemoteDataSource implements IBlogDataSource {
       throw Exception(e);
     } catch (e) {
       throw Exception(e);
+    }
+  }
+
+  @override
+  Future<BlogApiModel> getBlog(String blogId) async {
+    try {
+      print("Fetching blog with ID in remote datasource: $blogId");
+      final response = await _dio.post(
+        ApiEndpoints.viewFullBlog,
+        data: {"blog_id": blogId},
+      );
+
+      print("API Response in remote datasource: ${response.statusCode}");
+
+      if (response.statusCode == 200) {
+        final data = response.data['blog'];
+        return BlogApiModel.fromJson(data);
+      } else {
+        throw DioException(
+          requestOptions: response.requestOptions,
+          error: "Failed to fetch blog: ${response.statusMessage}",
+        );
+      }
+    } on DioException catch (e) {
+      throw DioException(
+        requestOptions: RequestOptions(path: ApiEndpoints.viewFullBlog),
+        error: e.message,
+      );
+    } catch (e) {
+      print("Unexpected error in remote datasource: $e");
+      throw Exception("Unexpected error: $e");
     }
   }
 }

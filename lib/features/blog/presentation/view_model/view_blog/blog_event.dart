@@ -15,3 +15,11 @@ class FetchLatestBlogs extends BlogEvent {
   @override
   List<Object> get props => [page];
 }
+
+class FetchBlogById extends BlogEvent {
+  final String blogId;
+  const FetchBlogById({required this.blogId});
+
+  @override
+  List<Object> get props => [blogId];
+}

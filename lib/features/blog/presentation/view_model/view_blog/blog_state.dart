@@ -20,6 +20,14 @@ class BlogLoaded extends BlogState {
   List<Object> get props => [blogs];
 }
 
+class BlogDetailLoaded extends BlogState {
+  final BlogEntity blog;
+  const BlogDetailLoaded({required this.blog});
+
+  @override
+  List<Object> get props => [blog];
+}
+
 class BlogError extends BlogState {
   final String message;
 

@@ -16,6 +16,7 @@ import 'package:linkora_app/features/blog/data/repository/blog_remote_repository
 import 'package:linkora_app/features/blog/domain/repository/blog_repository.dart';
 import 'package:linkora_app/features/blog/domain/use_case/create_blog_usecase.dart';
 import 'package:linkora_app/features/blog/domain/use_case/get_all_blog_usecase.dart';
+import 'package:linkora_app/features/blog/domain/use_case/get_blog_usecase.dart';
 import 'package:linkora_app/features/blog/domain/use_case/upload_blog_banner_usecase.dart';
 import 'package:linkora_app/features/blog/presentation/view_model/editor/create_blog_bloc.dart';
 import 'package:linkora_app/features/blog/presentation/view_model/view_blog/blog_bloc.dart';
@@ -182,7 +183,7 @@ _initBlogDependencies() async {
 
   // Repository
   getIt.registerLazySingleton<IBlogRepository>(
-    () => BlogRepositoryImpl(getIt<Dio>(), getIt<TokenSharedPrefs>(),
+    () => BlogRemoteRepository(getIt<Dio>(), getIt<TokenSharedPrefs>(),
         getIt<BlogRemoteDataSource>()), // Pass positional argument
   );
 
@@ -192,10 +193,15 @@ _initBlogDependencies() async {
         getIt<IBlogRepository>()), // Pass positional argument
   );
 
+  getIt.registerLazySingleton<GetBlogUseCase>(
+    () => GetBlogUseCase(getIt<IBlogRepository>()), // Pass positional argument
+  );
+
   // Bloc
   getIt.registerFactory<BlogBloc>(
     () => BlogBloc(
       getLatestBlogsUseCase: getIt<GetLatestBlogsUseCase>(),
+      getBlogUseCase: getIt<GetBlogUseCase>(),
     ),
   );
 
@@ -280,9 +286,9 @@ _initLoginDependencies() async {
 
   getIt.registerFactory<LoginBloc>(
     () => LoginBloc(
-      blogBlog: getIt<BlogBloc>(),
+      // blogBlog: getIt<BlogBloc>(),
       registerBloc: getIt<RegisterBloc>(),
-      // homeCubit: getIt<HomeCubit>(),
+      homeCubit: getIt<HomeCubit>(),
       // imagebloc: getIt<ImageBloc>(),
       loginUseCase: getIt<LoginUseCase>(),
       tokenSharedPrefs: getIt<TokenSharedPrefs>(),
