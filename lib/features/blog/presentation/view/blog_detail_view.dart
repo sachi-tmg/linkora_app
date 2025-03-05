@@ -144,10 +144,10 @@ class _BlogDetailPageState extends State<BlogDetailPage> {
                   const SizedBox(height: 15),
 
                   // Tags
-                  if (blog.tags.isNotEmpty)
+                  if (blog.tags != null && blog.tags!.isNotEmpty)
                     Wrap(
                       spacing: 8.0,
-                      children: blog.tags
+                      children: blog.tags!
                           .map(
                             (tag) => Chip(
                               label: Text(
