@@ -14,4 +14,6 @@ abstract class IBlogDataSource {
   Future<String> uploadBlogPicture(File file);
 
   Future<BlogApiModel> getBlog(String blogId);
+
+  Future<List<BlogEntity>> searchBlogs(String query, {int page = 1});
 }
