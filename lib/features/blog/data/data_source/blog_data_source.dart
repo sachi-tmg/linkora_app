@@ -16,4 +16,7 @@ abstract class IBlogDataSource {
   Future<BlogApiModel> getBlog(String blogId);
 
   Future<List<BlogEntity>> searchBlogs(String query, {int page = 1});
+
+  Future<List<BlogEntity>> getUserWrittenBlogs(
+      {int page = 1, bool draft = false});
 }

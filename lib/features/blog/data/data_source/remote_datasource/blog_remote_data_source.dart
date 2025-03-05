@@ -133,6 +133,7 @@ class BlogRemoteDataSource implements IBlogDataSource {
     }
   }
 
+  @override
   Future<List<BlogEntity>> searchBlogs(String query, {int page = 1}) async {
     try {
       final response = await _dio.post(
@@ -153,6 +154,47 @@ class BlogRemoteDataSource implements IBlogDataSource {
       throw Exception(e);
     } catch (e) {
       throw Exception(e);
+    }
+  }
+
+  @override
+  Future<List<BlogEntity>> getUserWrittenBlogs(
+      {int page = 1, bool draft = false}) async {
+    print("getUserWrittenBlogs() is being called");
+
+    try {
+      final token = await _getToken();
+      print("Token used for getUserWrittenBlogs: $token");
+
+      final response = await _dio.post(
+        ApiEndpoints.getUserWrittenBlogs,
+        data: {
+          "page": page,
+          "draft": draft,
+        },
+        options: Options(
+          headers: {
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      print("Raw API Response: ${response.data}");
+
+      if (response.statusCode == 200) {
+        final List<dynamic> blogsJson = response.data['blogs'];
+        final List<BlogEntity> blogs = blogsJson
+            .map((blogJson) => BlogApiModel.fromJson(blogJson).toEntity())
+            .toList();
+        return blogs;
+      } else {
+        throw Exception(
+            "Failed to fetch user-written blogs: ${response.statusMessage}");
+      }
+    } on DioException catch (e) {
+      throw Exception("DioException: ${e.message}");
+    } catch (e) {
+      throw Exception("Error: $e");
     }
   }
 }
