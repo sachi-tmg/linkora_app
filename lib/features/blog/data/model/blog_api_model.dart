@@ -12,11 +12,12 @@ class BlogApiModel extends Equatable {
   @JsonKey(name: 'des')
   final String description;
   final String blogPicture;
-  final String? content;
+  final List<String>? content;
   final bool? draft;
   final Map<String, dynamic> activity;
   final List<String> tags;
-  @JsonKey(name: 'dateCreated')
+  @JsonKey(
+      name: 'dateCreated', fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
   final DateTime? dateCreated;
   @JsonKey(name: 'userId')
   final Map<String, dynamic> user;
@@ -75,6 +76,15 @@ class BlogApiModel extends Equatable {
       user: entity.user,
       profilePicture: entity.profilePicture,
     );
+  }
+
+  // Custom DateTime serialization
+  static DateTime _dateTimeFromJson(String? date) {
+    return date == null ? DateTime.now() : DateTime.parse(date);
+  }
+
+  static String? _dateTimeToJson(DateTime? date) {
+    return date?.toIso8601String();
   }
 
   @override

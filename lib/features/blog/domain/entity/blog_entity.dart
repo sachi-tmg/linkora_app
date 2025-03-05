@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 
 class BlogEntity extends Equatable {
-  final String? blogId; // Make blogId nullable
+  final String? blogId;
   final String title;
   final String description;
   final String blogPicture;
-  final String? content;
+  final List<String>? content;
   final bool? draft;
   final Map<String, dynamic> activity;
   final List<String> tags;
@@ -14,7 +14,7 @@ class BlogEntity extends Equatable {
   final String? profilePicture;
 
   const BlogEntity({
-    this.blogId, // Nullable
+    this.blogId,
     required this.title,
     required this.description,
     required this.blogPicture,

@@ -11,13 +11,13 @@ BlogApiModel _$BlogApiModelFromJson(Map<String, dynamic> json) => BlogApiModel(
       title: json['title'] as String,
       description: json['des'] as String,
       blogPicture: json['blogPicture'] as String,
-      content: json['content'] as String?,
+      content:
+          (json['content'] as List<dynamic>?)?.map((e) => e as String).toList(),
       draft: json['draft'] as bool?,
       activity: json['activity'] as Map<String, dynamic>? ?? const {},
       tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
-      dateCreated: json['dateCreated'] == null
-          ? null
-          : DateTime.parse(json['dateCreated'] as String),
+      dateCreated:
+          BlogApiModel._dateTimeFromJson(json['dateCreated'] as String?),
       user: json['userId'] as Map<String, dynamic>? ?? const {},
       profilePicture: json['profilePicture'] as String?,
     );
@@ -32,7 +32,7 @@ Map<String, dynamic> _$BlogApiModelToJson(BlogApiModel instance) =>
       'draft': instance.draft,
       'activity': instance.activity,
       'tags': instance.tags,
-      'dateCreated': instance.dateCreated?.toIso8601String(),
+      'dateCreated': BlogApiModel._dateTimeToJson(instance.dateCreated),
       'userId': instance.user,
       'profilePicture': instance.profilePicture,
     };
