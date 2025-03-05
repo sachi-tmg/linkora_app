@@ -20,4 +20,5 @@ class ApiEndpoints {
   static const String latestBlogs = "blog/latest-blogs";
   static const String viewFullBlog = "blog/blog-view";
   static const String searchBlogs = "blog/search-blogs";
+  static const String getUserWrittenBlogs = "blog//user-written-blogs";
 }

@@ -82,12 +82,9 @@ class BlogRemoteRepository implements IBlogRepository {
   @override
   Future<Either<Failure, BlogEntity>> getBlog(String blogId) async {
     try {
-      print("Fetching blog in repository with ID: $blogId");
       final blog = await _remoteDataSource.getBlog(blogId);
-      print("Blog fetched successfully: ${blog.toEntity()}");
       return Right(blog.toEntity());
     } catch (e) {
-      print("Error fetching blog: $e");
       return Left(ApiFailure(message: e.toString()));
     }
   }
@@ -97,6 +94,22 @@ class BlogRemoteRepository implements IBlogRepository {
       {int page = 1}) async {
     try {
       final blogs = await _remoteDataSource.searchBlogs(query, page: page);
+      return Right(blogs);
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<BlogEntity>>> getUserWrittenBlogs({
+    int page = 1,
+    bool draft = false,
+  }) async {
+    try {
+      final blogs = await _remoteDataSource.getUserWrittenBlogs(
+        page: page,
+        draft: draft,
+      );
       return Right(blogs);
     } catch (e) {
       return Left(ApiFailure(message: e.toString()));

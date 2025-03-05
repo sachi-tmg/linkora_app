@@ -15,7 +15,7 @@ class BlogApiModel extends Equatable {
   final List<String>? content;
   final bool? draft;
   final Map<String, dynamic> activity;
-  final List<String> tags;
+  final List<String>? tags;
   @JsonKey(
       name: 'dateCreated', fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
   final DateTime? dateCreated;
@@ -31,7 +31,7 @@ class BlogApiModel extends Equatable {
     this.content,
     this.draft,
     this.activity = const {},
-    required this.tags,
+    this.tags = const [],
     this.dateCreated,
     this.user = const {},
     this.profilePicture,

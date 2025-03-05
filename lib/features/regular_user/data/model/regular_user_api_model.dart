@@ -12,7 +12,9 @@ class RegularUserApiModel extends Equatable {
   final Map<String, String>? social_links;
   final Map<String, int>? account_info;
   final List<String>? blogs;
-  final String? dateCreated; // Nullable to avoid parsing issues
+  final String? dateCreated;
+  @JsonKey(ignore: true)
+  final String? fullName;
 
   const RegularUserApiModel({
     this.id,
@@ -22,6 +24,7 @@ class RegularUserApiModel extends Equatable {
     this.account_info,
     this.blogs,
     this.dateCreated,
+    this.fullName,
   });
 
   /// Custom `fromJson` method to handle potential `null` values safely
@@ -31,23 +34,25 @@ class RegularUserApiModel extends Equatable {
       profilePicture: json['profilePicture'] ?? '',
       bio: json['bio'] ?? '',
       social_links: (json['social_links'] as Map<String, dynamic>?)?.map(
-            (key, value) =>
-                MapEntry(key, value ?? ''), // Ensure all values are Strings
+            (key, value) => MapEntry(key, value ?? ''),
           ) ??
           {},
       account_info: (json['account_info'] as Map<String, dynamic>?)?.map(
-            (key, value) =>
-                MapEntry(key, value ?? 0), // Ensure all values are ints
+            (key, value) => MapEntry(key, value ?? 0),
           ) ??
           {},
       blogs:
           (json['blogs'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               [],
-      dateCreated: json['dateCreated'], // Keep as nullable
+      dateCreated: json['dateCreated'],
     );
   }
 
-  Map<String, dynamic> toJson() => _$RegularUserApiModelToJson(this);
+  Map<String, dynamic> toJson() {
+    final json = _$RegularUserApiModelToJson(this);
+    json.remove('fullName');
+    return json;
+  }
 
   @override
   List<Object?> get props => [
@@ -58,5 +63,6 @@ class RegularUserApiModel extends Equatable {
         account_info,
         blogs,
         dateCreated,
+        fullName,
       ];
 }

@@ -15,7 +15,9 @@ BlogApiModel _$BlogApiModelFromJson(Map<String, dynamic> json) => BlogApiModel(
           (json['content'] as List<dynamic>?)?.map((e) => e as String).toList(),
       draft: json['draft'] as bool?,
       activity: json['activity'] as Map<String, dynamic>? ?? const {},
-      tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
+      tags:
+          (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+              const [],
       dateCreated:
           BlogApiModel._dateTimeFromJson(json['dateCreated'] as String?),
       user: json['userId'] as Map<String, dynamic>? ?? const {},

@@ -8,7 +8,7 @@ class BlogEntity extends Equatable {
   final List<String>? content;
   final bool? draft;
   final Map<String, dynamic> activity;
-  final List<String> tags;
+  final List<String>? tags;
   final DateTime dateCreated;
   final Map<String, dynamic> user;
   final String? profilePicture;
@@ -21,7 +21,7 @@ class BlogEntity extends Equatable {
     this.content,
     this.draft,
     required this.activity,
-    required this.tags,
+    this.tags,
     required this.dateCreated,
     required this.user,
     this.profilePicture,

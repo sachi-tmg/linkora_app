@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:linkora_app/app/shared_prefs/token_shared_prefs.dart';
+import 'package:linkora_app/features/blog/domain/entity/blog_entity.dart';
+import 'package:linkora_app/features/blog/domain/use_case/get_user_written_blogs_usecase.dart';
 import 'package:linkora_app/features/regular_user/domain/entity/regular_user_entity.dart';
 import 'package:linkora_app/features/regular_user/domain/use_case/get_regular_user_usecase.dart';
 import 'package:linkora_app/features/regular_user/domain/use_case/update_regular_user_usecase.dart';
@@ -15,18 +17,21 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final GetRegularUserUseCase getRegularUserUseCase;
   final UpdateRegularUserUseCase updateRegularUserUseCase;
   final UploadProfilePictureUsecase uploadProfilePictureUseCase;
+  final GetUserWrittenBlogsUseCase getUserWrittenBlogsUseCase;
   final TokenSharedPrefs _tokenSharedPrefs;
 
   ProfileBloc({
     required this.getRegularUserUseCase,
     required this.updateRegularUserUseCase,
     required this.uploadProfilePictureUseCase,
+    required this.getUserWrittenBlogsUseCase,
     required TokenSharedPrefs tokenSharedPrefs,
   })  : _tokenSharedPrefs = tokenSharedPrefs,
         super(const ProfileState.initial()) {
     on<LoadProfile>(_onLoadProfile);
     on<UpdateProfile>(_onUpdateProfile);
     on<UploadProfilePicture>(_onUploadProfilePicture);
+    on<LoadUserBlogs>(_onLoadUserBlogs);
   }
 
   Future<void> _onLoadProfile(
@@ -86,6 +91,43 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
+  Future<void> _onLoadUserBlogs(
+    LoadUserBlogs event,
+    Emitter<ProfileState> emit,
+  ) async {
+    emit(state.copyWith(isLoading: true));
+    print("Loading user blogs: page ${event.page}, draft: ${event.draft}");
+    try {
+      final result = await getUserWrittenBlogsUseCase.call({
+        'page': event.page,
+        'draft': event.draft,
+      });
+
+      result.fold(
+        (failure) {
+          emit(state.copyWith(
+            isLoading: false,
+            errorMessage: failure.message.isEmpty
+                ? 'An error occurred while fetching blogs.'
+                : failure.message,
+          ));
+        },
+        (blogs) {
+          emit(state.copyWith(
+            isLoading: false,
+            isSuccess: true,
+            blogs: blogs, // Store fetched blogs in state
+          ));
+        },
+      );
+    } catch (e) {
+      emit(state.copyWith(
+        isLoading: false,
+        errorMessage: 'An unexpected error occurred: ${e.toString()}',
+      ));
+    }
+  }
+
   Future<void> _onUpdateProfile(
     UpdateProfile event,
     Emitter<ProfileState> emit,
@@ -94,6 +136,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     final updatedUser = RegularUserEntity(
       username: event.username,
+      fullName: state.regularUser?.fullName ?? '',
       bio: event.bio,
       profilePicture:
           event.profilePicture, // This should now contain the imageName
