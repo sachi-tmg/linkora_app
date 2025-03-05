@@ -91,4 +91,15 @@ class BlogRemoteRepository implements IBlogRepository {
       return Left(ApiFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, List<BlogEntity>>> searchBlogs(String query,
+      {int page = 1}) async {
+    try {
+      final blogs = await _remoteDataSource.searchBlogs(query, page: page);
+      return Right(blogs);
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
 }

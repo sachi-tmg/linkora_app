@@ -14,4 +14,7 @@ abstract class IBlogRepository {
   Future<Either<Failure, String>> uploadBlogPicture(File file);
 
   Future<Either<Failure, BlogEntity>> getBlog(String blogId);
+
+  Future<Either<Failure, List<BlogEntity>>> searchBlogs(String query,
+      {int page = 1});
 }
