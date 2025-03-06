@@ -44,10 +44,17 @@ class _SearchBlogsViewState extends State<SearchBlogsView> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Search Blogs'),
+        title: const Text(
+          'Search Blogs',
+          style: TextStyle(color: Colors.white, fontSize: 24),
+        ),
+        backgroundColor: Colors.blueAccent,
       ),
       body: Column(
         children: [
+          const SizedBox(
+            height: 16,
+          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: TextField(

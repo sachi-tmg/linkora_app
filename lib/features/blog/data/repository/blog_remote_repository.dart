@@ -115,4 +115,24 @@ class BlogRemoteRepository implements IBlogRepository {
       return Left(ApiFailure(message: e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, String>> deleteBlog(String blogId) async {
+    try {
+      await _remoteDataSource.deleteBlog(blogId);
+      return const Right("Blog deleted successfully");
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> likeBlog(String id, bool isLikedByUser) async {
+    try {
+      final result = await _remoteDataSource.likeBlog(id, isLikedByUser);
+      return Right(result);
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
 }

@@ -7,6 +7,7 @@ part of 'blog_api_model.dart';
 // **************************************************************************
 
 BlogApiModel _$BlogApiModelFromJson(Map<String, dynamic> json) => BlogApiModel(
+      id: json['_id'] as String?,
       blogId: json['blog_id'] as String?,
       title: json['title'] as String,
       description: json['des'] as String,
@@ -26,6 +27,7 @@ BlogApiModel _$BlogApiModelFromJson(Map<String, dynamic> json) => BlogApiModel(
 
 Map<String, dynamic> _$BlogApiModelToJson(BlogApiModel instance) =>
     <String, dynamic>{
+      '_id': instance.id,
       'blog_id': instance.blogId,
       'title': instance.title,
       'des': instance.description,

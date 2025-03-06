@@ -197,4 +197,57 @@ class BlogRemoteDataSource implements IBlogDataSource {
       throw Exception("Error: $e");
     }
   }
+
+  @override
+  Future<void> deleteBlog(String blogId) async {
+    try {
+      final token = await _getToken();
+      final response = await _dio.post(
+        ApiEndpoints.deleteBlog,
+        data: {'blog_id': blogId},
+        options: Options(
+          headers: token != null ? {'Authorization': 'Bearer $token'} : {},
+        ),
+      );
+      print("API response for like blog: ${response.data}");
+
+      if (response.statusCode == 200) {
+        // Handle success if needed
+        return;
+      } else {
+        throw Exception("Failed to delete blog: ${response.statusMessage}");
+      }
+    } on DioException catch (e) {
+      throw Exception("DioException: ${e.message}");
+    } catch (e) {
+      throw Exception("Error: $e");
+    }
+  }
+
+  @override
+  Future<bool> likeBlog(String id, bool isLikedByUser) async {
+    try {
+      final token = await _getToken();
+      final response = await _dio.post(
+        ApiEndpoints.likeBlog,
+        data: {
+          "_id": id,
+          "isLikedByUser": isLikedByUser,
+        },
+        options: Options(
+          headers: token != null ? {'Authorization': 'Bearer $token'} : {},
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data['liked_by_user'];
+      } else {
+        throw Exception("Failed to like blog: ${response.statusMessage}");
+      }
+    } on DioException catch (e) {
+      throw Exception("DioException: ${e.message}");
+    } catch (e) {
+      throw Exception("Error: $e");
+    }
+  }
 }

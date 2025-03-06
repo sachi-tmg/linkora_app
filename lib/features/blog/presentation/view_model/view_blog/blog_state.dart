@@ -36,3 +36,22 @@ class BlogError extends BlogState {
   @override
   List<Object> get props => [message];
 }
+
+class BlogDeleted extends BlogState {
+  final String message;
+
+  const BlogDeleted({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
+
+class BlogLiked extends BlogState {
+  final String id;
+  final bool isLiked;
+
+  const BlogLiked({required this.id, required this.isLiked});
+
+  @override
+  List<Object> get props => [id, isLiked];
+}

@@ -1,6 +1,8 @@
 import 'package:equatable/equatable.dart';
+import 'package:linkora_app/features/blog/data/model/blog_api_model.dart';
 
 class BlogEntity extends Equatable {
+  final String? id;
   final String? blogId;
   final String title;
   final String description;
@@ -14,6 +16,7 @@ class BlogEntity extends Equatable {
   final String? profilePicture;
 
   const BlogEntity({
+    this.id,
     this.blogId,
     required this.title,
     required this.description,
@@ -29,6 +32,7 @@ class BlogEntity extends Equatable {
 
   @override
   List<Object?> get props => [
+        id,
         blogId,
         title,
         description,
@@ -41,4 +45,23 @@ class BlogEntity extends Equatable {
         user,
         profilePicture,
       ];
+}
+
+extension BlogEntityToApiModel on BlogEntity {
+  BlogApiModel toApiModel() {
+    return BlogApiModel(
+      id: id,
+      blogId: blogId,
+      title: title,
+      description: description,
+      blogPicture: blogPicture,
+      content: content,
+      draft: draft,
+      activity: activity,
+      tags: tags,
+      dateCreated: dateCreated,
+      user: user,
+      profilePicture: profilePicture,
+    );
+  }
 }

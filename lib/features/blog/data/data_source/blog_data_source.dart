@@ -19,4 +19,8 @@ abstract class IBlogDataSource {
 
   Future<List<BlogEntity>> getUserWrittenBlogs(
       {int page = 1, bool draft = false});
+
+  Future<void> deleteBlog(String blogId);
+
+  Future<bool> likeBlog(String id, bool isLikedByUser);
 }

@@ -17,7 +17,6 @@ import 'package:linkora_app/features/blog/domain/repository/blog_repository.dart
 import 'package:linkora_app/features/blog/domain/use_case/create_blog_usecase.dart';
 import 'package:linkora_app/features/blog/domain/use_case/get_all_blog_usecase.dart';
 import 'package:linkora_app/features/blog/domain/use_case/get_blog_usecase.dart';
-import 'package:linkora_app/features/blog/domain/use_case/get_user_written_blogs_usecase.dart';
 import 'package:linkora_app/features/blog/domain/use_case/search_blog_usecase.dart';
 import 'package:linkora_app/features/blog/domain/use_case/upload_blog_banner_usecase.dart';
 import 'package:linkora_app/features/blog/presentation/view_model/editor/create_blog_bloc.dart';
@@ -28,7 +27,10 @@ import 'package:linkora_app/features/onboarding/presentation/view_model/onboardi
 import 'package:linkora_app/features/regular_user/data/data_source/remote_datasource/regular_user_remote_data_source.dart';
 import 'package:linkora_app/features/regular_user/data/repository/regular_user_remote_repository/regular_user_remote_repository.dart';
 import 'package:linkora_app/features/regular_user/domain/respository/regular_user_repository.dart';
+import 'package:linkora_app/features/regular_user/domain/use_case/delete_blog_usecase.dart';
 import 'package:linkora_app/features/regular_user/domain/use_case/get_regular_user_usecase.dart';
+import 'package:linkora_app/features/regular_user/domain/use_case/get_user_written_blogs_usecase.dart';
+import 'package:linkora_app/features/regular_user/domain/use_case/like_blog_usecase.dart';
 import 'package:linkora_app/features/regular_user/domain/use_case/update_regular_user_usecase.dart';
 import 'package:linkora_app/features/regular_user/domain/use_case/upload_profile_picture_usecase.dart';
 import 'package:linkora_app/features/regular_user/presentation/view_model/profile_bloc.dart';
@@ -206,11 +208,21 @@ _initBlogDependencies() async {
               getIt<IBlogRepository>()) // Pass positional argument
       );
 
+  getIt.registerLazySingleton<DeleteBlogUseCase>(() => DeleteBlogUseCase(
+          getIt<IBlogRepository>()) // Pass positional argument
+      );
+
+  getIt.registerLazySingleton<LikeBlogUseCase>(() =>
+          LikeBlogUseCase(getIt<IBlogRepository>()) // Pass positional argument
+      );
+
   // Bloc
   getIt.registerFactory<BlogBloc>(
     () => BlogBloc(
       getLatestBlogsUseCase: getIt<GetLatestBlogsUseCase>(),
       getBlogUseCase: getIt<GetBlogUseCase>(),
+      deleteBlogUseCase: getIt<DeleteBlogUseCase>(),
+      likeBlogUseCase: getIt<LikeBlogUseCase>(),
     ),
   );
 

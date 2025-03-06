@@ -6,6 +6,8 @@ part 'blog_api_model.g.dart';
 
 @JsonSerializable()
 class BlogApiModel extends Equatable {
+  @JsonKey(name: '_id')
+  final String? id;
   @JsonKey(name: 'blog_id')
   final String? blogId;
   final String title;
@@ -24,6 +26,7 @@ class BlogApiModel extends Equatable {
   final String? profilePicture;
 
   const BlogApiModel({
+    this.id,
     this.blogId,
     required this.title,
     required this.description,
@@ -47,6 +50,7 @@ class BlogApiModel extends Equatable {
   // Convert to Entity
   BlogEntity toEntity() {
     return BlogEntity(
+      id: id,
       blogId: blogId,
       title: title,
       description: description,
@@ -64,6 +68,7 @@ class BlogApiModel extends Equatable {
   // Convert from Entity
   factory BlogApiModel.fromEntity(BlogEntity entity) {
     return BlogApiModel(
+      id: entity.id,
       blogId: entity.blogId,
       title: entity.title,
       description: entity.description,
@@ -89,6 +94,7 @@ class BlogApiModel extends Equatable {
 
   @override
   List<Object?> get props => [
+        id,
         blogId,
         title,
         description,
