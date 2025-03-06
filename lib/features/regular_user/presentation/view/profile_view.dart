@@ -34,7 +34,6 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    // Trigger LoadProfile event directly from the Bloc
     context.read<ProfileBloc>().add(const LoadProfile(username: ''));
     context.read<ProfileBloc>().add(const LoadUserBlogs(page: 1, draft: false));
   }
@@ -43,14 +42,13 @@ class _ProfilePageState extends State<ProfilePage> {
     final filePath = file.absolute.path;
     final fileExtension = filePath.split('.').last.toLowerCase();
 
-    // Determine the correct format based on the original file type
     CompressFormat format;
     if (fileExtension == 'png') {
       format = CompressFormat.png;
     } else if (fileExtension == 'webp') {
       format = CompressFormat.webp;
     } else {
-      format = CompressFormat.jpeg; // Default to JPEG
+      format = CompressFormat.jpeg;
     }
 
     final compressedPath = '${filePath}_compressed.$fileExtension';
@@ -70,15 +68,10 @@ class _ProfilePageState extends State<ProfilePage> {
       final profilePicture = await ImagePicker().pickImage(source: imageSource);
       if (profilePicture != null) {
         File selectedImage = File(profilePicture.path);
-
-        // Compress the image
         File? compressedImage = await _compressImage(selectedImage);
-
-        // Upload compressed image
         context
             .read<ProfileBloc>()
             .add(UploadProfilePicture(file: compressedImage ?? selectedImage));
-
         setState(() {
           _img = compressedImage;
         });
@@ -91,10 +84,9 @@ class _ProfilePageState extends State<ProfilePage> {
   void _onEditProfilePressed(ProfileState state) {
     setState(() {
       _isEditing = true;
-      _showStats = false; // Hide Stats section when editing
+      _showStats = false;
       _usernameController.text = state.regularUser?.username ?? '';
       _bioController.text = state.regularUser?.bio ?? '';
-      // Initialize social links if available
       if (state.regularUser?.socialLinks != null) {
         state.regularUser!.socialLinks.forEach((key, value) {
           if (_socialLinksControllers.containsKey(key)) {
@@ -110,7 +102,6 @@ class _ProfilePageState extends State<ProfilePage> {
       final socialLinks = _socialLinksControllers
           .map((key, value) => MapEntry(key, value.text));
 
-      // Get the current state
       final currentState = context.read<ProfileBloc>().state;
 
       context.read<ProfileBloc>().add(UpdateProfile(
@@ -142,11 +133,17 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isTablet = MediaQuery.of(context).size.width >= 600;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: const Text(
+          'Profile',
+          style: TextStyle(color: Colors.white, fontSize: 22),
+        ),
         automaticallyImplyLeading: false,
         backgroundColor: const Color.fromARGB(255, 61, 155, 233),
+        foregroundColor: Colors.white,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout, size: 20),
@@ -181,111 +178,124 @@ class _ProfilePageState extends State<ProfilePage> {
 
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Stack(
-                          alignment: Alignment.bottomRight,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) => Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      ListTile(
-                                        leading: const Icon(Icons.camera),
-                                        title: const Text('Camera'),
-                                        onTap: () {
-                                          _browseImage(ImageSource.camera);
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const Icon(Icons.image),
-                                        title: const Text('Gallery'),
-                                        onTap: () {
-                                          _browseImage(ImageSource.gallery);
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                    ],
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: MediaQuery.of(context).size.height,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Stack(
+                            alignment: Alignment.bottomRight,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) => Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        ListTile(
+                                          leading: const Icon(Icons.camera),
+                                          title: const Text('Camera'),
+                                          onTap: () {
+                                            _browseImage(ImageSource.camera);
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                        ListTile(
+                                          leading: const Icon(Icons.image),
+                                          title: const Text('Gallery'),
+                                          onTap: () {
+                                            _browseImage(ImageSource.gallery);
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                child: CircleAvatar(
+                                  radius: isTablet ? 70 : 50,
+                                  backgroundImage: _img != null
+                                      ? FileImage(_img!)
+                                      : (state.regularUser?.profilePicture !=
+                                                      null &&
+                                                  state.regularUser!.profilePicture
+                                                      .isNotEmpty
+                                              ? NetworkImage(state
+                                                  .regularUser!.profilePicture)
+                                              : const AssetImage(
+                                                  'assets/images/default_profile.jpg'))
+                                          as ImageProvider,
+                                ),
+                              ),
+                              if (_isEditing)
+                                Container(
+                                  padding: const EdgeInsets.all(4),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
                                   ),
-                                );
-                              },
-                              child: CircleAvatar(
-                                radius: 50,
-                                backgroundImage: _img != null
-                                    ? FileImage(_img!)
-                                    : (state.regularUser?.profilePicture !=
-                                                    null &&
-                                                state.regularUser!.profilePicture
-                                                    .isNotEmpty
-                                            ? NetworkImage(state
-                                                .regularUser!.profilePicture)
-                                            : const AssetImage(
-                                                'assets/images/default_profile.jpg'))
-                                        as ImageProvider,
-                              ),
-                            ),
-                            if (_isEditing)
-                              Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
+                                  child: const Icon(
+                                    Icons.camera_alt,
+                                    color: Colors.blue,
+                                    size: 24,
+                                  ),
                                 ),
-                                child: const Icon(
-                                  Icons.camera_alt,
-                                  color: Colors.blue,
-                                  size: 24,
-                                ),
-                              ),
-                          ],
-                        ),
-                        const SizedBox(width: 16),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              state.regularUser?.fullName ?? 'FullName',
-                              style: const TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              state.regularUser?.username ?? 'Username',
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
+                            ],
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _showStats = true;
-                                      _isEditing = false;
-                                    });
-                                  },
-                                  child: const Text("View Stats"),
+                                Text(
+                                  state.regularUser?.fullName ?? 'FullName',
+                                  style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                                const SizedBox(width: 8),
-                                ElevatedButton(
-                                  onPressed: () => _onEditProfilePressed(state),
-                                  child: const Text("Edit Profile"),
+                                Text(
+                                  state.regularUser?.username ?? 'Username',
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            _showStats = true;
+                                            _isEditing = false;
+                                          });
+                                        },
+                                        child: const Text("View Stats"),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        onPressed: () =>
+                                            _onEditProfilePressed(state),
+                                        child: const Text("Edit Profile"),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const Divider(),
-                    if (_showStats) _buildStatsAndBlogsSection(),
-                    if (_isEditing) _buildEditProfileSection(),
-                  ],
+                          ),
+                        ],
+                      ),
+                      const Divider(),
+                      if (_showStats) _buildStatsAndBlogsSection(isTablet),
+                      if (_isEditing) _buildEditProfileSection(),
+                    ],
+                  ),
                 ),
               );
             },
@@ -295,18 +305,19 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildStatsAndBlogsSection() {
-    return const Column(
+  Widget _buildStatsAndBlogsSection(bool isTablet) {
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           'Stats & Blogs',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         SizedBox(
-          height: 580, // Adjust as needed
-          child: ProfileBlogListWidget(),
+          height: isTablet ? 800 : 400, // Adjust height for tablet
+          child:
+              const ProfileBlogListWidget(), // Use ListView for both tablets and phones
         ),
       ],
     );

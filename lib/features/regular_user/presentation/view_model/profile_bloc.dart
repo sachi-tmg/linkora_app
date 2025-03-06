@@ -4,9 +4,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:linkora_app/app/shared_prefs/token_shared_prefs.dart';
 import 'package:linkora_app/features/blog/domain/entity/blog_entity.dart';
-import 'package:linkora_app/features/blog/domain/use_case/get_user_written_blogs_usecase.dart';
 import 'package:linkora_app/features/regular_user/domain/entity/regular_user_entity.dart';
 import 'package:linkora_app/features/regular_user/domain/use_case/get_regular_user_usecase.dart';
+import 'package:linkora_app/features/regular_user/domain/use_case/get_user_written_blogs_usecase.dart';
 import 'package:linkora_app/features/regular_user/domain/use_case/update_regular_user_usecase.dart';
 import 'package:linkora_app/features/regular_user/domain/use_case/upload_profile_picture_usecase.dart';
 
@@ -138,8 +138,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       username: event.username,
       fullName: state.regularUser?.fullName ?? '',
       bio: event.bio,
-      profilePicture:
-          event.profilePicture, // This should now contain the imageName
+      profilePicture: event.profilePicture.isEmpty
+          ? state.regularUser?.profilePicture ?? ''
+          : event.profilePicture,
       socialLinks: event.socialLinks,
       totalPosts: state.regularUser?.totalPosts ?? 0,
       totalReads: state.regularUser?.totalReads ?? 0,

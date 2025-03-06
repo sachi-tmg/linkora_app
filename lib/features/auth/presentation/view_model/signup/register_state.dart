@@ -1,15 +1,15 @@
 part of 'register_bloc.dart';
 
-class RegisterState {
+class RegisterState extends Equatable {
   final bool isLoading;
   final bool isSuccess;
 
-  RegisterState({
+  const RegisterState({
     required this.isLoading,
     required this.isSuccess,
   });
 
-  RegisterState.initial()
+  const RegisterState.initial()
       : isLoading = false,
         isSuccess = false;
   RegisterState copyWith({
@@ -22,5 +22,6 @@ class RegisterState {
     );
   }
 
+  @override
   List<Object?> get props => [isLoading, isSuccess];
 }

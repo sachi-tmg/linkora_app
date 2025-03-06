@@ -1,4 +1,6 @@
-class RegularUserEntity {
+import 'package:equatable/equatable.dart';
+
+class RegularUserEntity extends Equatable {
   final String? userId;
   final String? username;
   final String? fullName;
@@ -10,7 +12,7 @@ class RegularUserEntity {
   final List<String> blogs;
   final DateTime? dateCreated;
 
-  RegularUserEntity({
+  const RegularUserEntity({
     this.userId,
     this.username,
     this.fullName,
@@ -57,4 +59,17 @@ class RegularUserEntity {
           : null,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        username,
+        fullName,
+        bio,
+        profilePicture,
+        socialLinks,
+        totalPosts,
+        totalReads,
+        blogs,
+        dateCreated,
+      ];
 }

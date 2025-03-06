@@ -8,34 +8,46 @@ import 'package:linkora_app/features/blog/presentation/view_model/view_blog/blog
 class BlogListWidget extends StatelessWidget {
   final List<BlogEntity> blogs;
   final ScrollController scrollController;
+  final bool showLoadingIndicator; // Add this flag
 
   const BlogListWidget({
     super.key,
     required this.blogs,
     required this.scrollController,
+    this.showLoadingIndicator = false, // Default to false
   });
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       controller: scrollController,
-      itemCount: blogs.length + 1, // Add 1 for the loading indicator
+      itemCount: blogs.isNotEmpty
+          ? blogs.length +
+              (showLoadingIndicator
+                  ? 1
+                  : 0) // Conditionally add 1 for loading indicator
+          : 0,
       itemBuilder: (context, index) {
         if (index < blogs.length) {
           return BlogCard(blog: blogs[index]);
         } else {
-          return BlocBuilder<SearchBlogsBloc, SearchBlogsState>(
-            builder: (context, state) {
-              if (state is SearchBlogsLoadingMore) {
-                return const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              } else {
-                return Container();
-              }
-            },
-          );
+          // Only show loading indicator if showLoadingIndicator is true
+          if (showLoadingIndicator) {
+            return BlocBuilder<SearchBlogsBloc, SearchBlogsState>(
+              builder: (context, state) {
+                if (state is SearchBlogsLoadingMore) {
+                  return const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
         }
       },
     );
@@ -130,20 +142,12 @@ class BlogCard extends StatelessWidget {
                     Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.thumb_up),
+                          icon: const Icon(Icons.favorite),
                           onPressed: () {
                             // Handle like action
                           },
                         ),
                         Text("${blog.activity['likeCount']} Likes"),
-                        const SizedBox(width: 20),
-                        IconButton(
-                          icon: const Icon(Icons.comment),
-                          onPressed: () {
-                            // Handle comment action
-                          },
-                        ),
-                        Text("${blog.activity['commentCount']} Comments"),
                       ],
                     ),
                   ],

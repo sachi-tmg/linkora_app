@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:linkora_app/app/di/di.dart';
+import 'package:linkora_app/core/common/snackbar/my_snackbar.dart';
 import 'package:linkora_app/features/auth/presentation/view/login_view.dart';
 import 'package:linkora_app/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:linkora_app/features/home/presentation/view_model/home_state.dart';
@@ -14,6 +15,11 @@ class HomeCubit extends Cubit<HomeState> {
 
   Future<void> logout(BuildContext context) async {
     await Future.delayed(const Duration(seconds: 1));
+    showMySnackBar(
+      context: context,
+      message: "Logging out...",
+      color: Colors.redAccent,
+    );
     if (context.mounted) {
       Navigator.pushReplacement(
         context,
