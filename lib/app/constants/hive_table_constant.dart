@@ -6,4 +6,7 @@ class HiveTableConstant {
 
   static const int blogTableId = 0;
   static const String blogBox = 'blogBox';
+
+  static const int regularUserTableId = 0;
+  static const String regularUserBox = 'regularUserBox';
 }

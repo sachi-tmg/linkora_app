@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:linkora_app/app/shared_prefs/token_shared_prefs.dart';
+import 'package:linkora_app/core/common/internet_checker/internet_checker.dart';
 import 'package:linkora_app/core/network/api_service.dart';
 import 'package:linkora_app/core/network/hive_service.dart';
 import 'package:linkora_app/features/auth/data/data_source/local_datasource/auth_local_data_source.dart';
@@ -11,6 +12,7 @@ import 'package:linkora_app/features/auth/domain/use_case/login_usecase.dart';
 import 'package:linkora_app/features/auth/domain/use_case/register_usecase.dart';
 import 'package:linkora_app/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:linkora_app/features/auth/presentation/view_model/signup/register_bloc.dart';
+import 'package:linkora_app/features/blog/data/data_source/local_datasource/blog_local_data_source.dart';
 import 'package:linkora_app/features/blog/data/data_source/remote_datasource/blog_remote_data_source.dart';
 import 'package:linkora_app/features/blog/data/repository/blog_remote_repository.dart';
 import 'package:linkora_app/features/blog/domain/repository/blog_repository.dart';
@@ -187,10 +189,19 @@ _initBlogDependencies() async {
     ),
   );
 
+  getIt.registerLazySingleton<BlogLocalDataSource>(
+    () => BlogLocalDataSource(getIt<HiveService>()),
+  );
+
+  getIt.registerLazySingleton<InternetChecker>(() => InternetChecker());
+
   // Repository
   getIt.registerLazySingleton<IBlogRepository>(
-    () => BlogRemoteRepository(getIt<Dio>(), getIt<TokenSharedPrefs>(),
-        getIt<BlogRemoteDataSource>()), // Pass positional argument
+    () => BlogRemoteRepository(
+      getIt<Dio>(),
+      getIt<TokenSharedPrefs>(),
+      getIt<BlogRemoteDataSource>(),
+    ), // Pass positional argument
   );
 
   // Usecases
