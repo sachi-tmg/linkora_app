@@ -20,4 +20,8 @@ abstract class IBlogRepository {
 
   Future<Either<Failure, List<BlogEntity>>> getUserWrittenBlogs(
       {int page = 1, bool draft = false});
+
+  Future<Either<Failure, String>> deleteBlog(String blogId);
+
+  Future<Either<Failure, bool>> likeBlog(String id, bool isLikedByUser);
 }

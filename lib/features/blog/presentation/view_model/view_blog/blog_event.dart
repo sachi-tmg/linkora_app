@@ -23,3 +23,22 @@ class FetchBlogById extends BlogEvent {
   @override
   List<Object> get props => [blogId];
 }
+
+class DeleteBlog extends BlogEvent {
+  final String blogId;
+
+  const DeleteBlog({required this.blogId});
+
+  @override
+  List<Object> get props => [blogId];
+}
+
+class LikeBlog extends BlogEvent {
+  final String id;
+  final bool isLikedByUser;
+
+  const LikeBlog({required this.id, required this.isLikedByUser});
+
+  @override
+  List<Object> get props => [id, isLikedByUser];
+}

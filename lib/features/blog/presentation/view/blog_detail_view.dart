@@ -14,7 +14,7 @@ class BlogDetailPage extends StatefulWidget {
 
 class _BlogDetailPageState extends State<BlogDetailPage> {
   bool showCommentSection = false;
-  final TextEditingController _commentController = TextEditingController();
+  late bool _isLiked;
 
   @override
   void initState() {
@@ -42,6 +42,8 @@ class _BlogDetailPageState extends State<BlogDetailPage> {
             return Center(child: Text("Error: ${state.message}"));
           } else if (state is BlogDetailLoaded) {
             final blog = state.blog;
+
+            _isLiked = blog.activity['isLikedByUser'] ?? false;
 
             // Convert dateCreated to a readable format (YYYY-MM-DD)
             String formattedDate =
@@ -169,62 +171,30 @@ class _BlogDetailPageState extends State<BlogDetailPage> {
                   Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.thumb_up),
+                        icon: Icon(
+                          _isLiked ? Icons.favorite : Icons.favorite_border,
+                          color: _isLiked ? Colors.red : Colors.grey,
+                        ),
                         onPressed: () {
-                          // Handle like functionality
+                          setState(() {
+                            _isLiked =
+                                !_isLiked; // Toggle local state immediately.
+                          });
+                          context.read<BlogBloc>().add(LikeBlog(
+                                id: blog.id!,
+                                isLikedByUser:
+                                    !_isLiked, // Send the opposite of the current state.
+                              ));
                         },
                       ),
                       Text("${blog.activity['likeCount']} Likes"),
-                      const SizedBox(width: 20),
-                      IconButton(
-                        icon: const Icon(Icons.comment),
-                        onPressed: () {
-                          setState(() {
-                            showCommentSection = !showCommentSection;
-                          });
-                        },
-                      ),
-                      Text("${blog.activity['commentCount']} Comments"),
                     ],
                   ),
-
-                  // Comment Section (Only Visible When Clicked)
-                  if (showCommentSection)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 10),
-                        const Text(
-                          "Write a comment:",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 5),
-                        TextField(
-                          controller: _commentController,
-                          decoration: InputDecoration(
-                            hintText: "Enter your comment...",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Handle comment submission
-                          },
-                          child: const Text("Post Comment"),
-                        ),
-                      ],
-                    ),
                 ],
               ),
             );
           }
-          return const Center(child: Text("Fetching blog details..."));
+          return const SizedBox.shrink();
         },
       ),
     );

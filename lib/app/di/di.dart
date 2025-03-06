@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:linkora_app/app/shared_prefs/token_shared_prefs.dart';
+import 'package:linkora_app/core/common/internet_checker/internet_checker.dart';
 import 'package:linkora_app/core/network/api_service.dart';
 import 'package:linkora_app/core/network/hive_service.dart';
 import 'package:linkora_app/features/auth/data/data_source/local_datasource/auth_local_data_source.dart';
@@ -11,13 +12,13 @@ import 'package:linkora_app/features/auth/domain/use_case/login_usecase.dart';
 import 'package:linkora_app/features/auth/domain/use_case/register_usecase.dart';
 import 'package:linkora_app/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:linkora_app/features/auth/presentation/view_model/signup/register_bloc.dart';
+import 'package:linkora_app/features/blog/data/data_source/local_datasource/blog_local_data_source.dart';
 import 'package:linkora_app/features/blog/data/data_source/remote_datasource/blog_remote_data_source.dart';
 import 'package:linkora_app/features/blog/data/repository/blog_remote_repository.dart';
 import 'package:linkora_app/features/blog/domain/repository/blog_repository.dart';
 import 'package:linkora_app/features/blog/domain/use_case/create_blog_usecase.dart';
 import 'package:linkora_app/features/blog/domain/use_case/get_all_blog_usecase.dart';
 import 'package:linkora_app/features/blog/domain/use_case/get_blog_usecase.dart';
-import 'package:linkora_app/features/blog/domain/use_case/get_user_written_blogs_usecase.dart';
 import 'package:linkora_app/features/blog/domain/use_case/search_blog_usecase.dart';
 import 'package:linkora_app/features/blog/domain/use_case/upload_blog_banner_usecase.dart';
 import 'package:linkora_app/features/blog/presentation/view_model/editor/create_blog_bloc.dart';
@@ -28,7 +29,10 @@ import 'package:linkora_app/features/onboarding/presentation/view_model/onboardi
 import 'package:linkora_app/features/regular_user/data/data_source/remote_datasource/regular_user_remote_data_source.dart';
 import 'package:linkora_app/features/regular_user/data/repository/regular_user_remote_repository/regular_user_remote_repository.dart';
 import 'package:linkora_app/features/regular_user/domain/respository/regular_user_repository.dart';
+import 'package:linkora_app/features/regular_user/domain/use_case/delete_blog_usecase.dart';
 import 'package:linkora_app/features/regular_user/domain/use_case/get_regular_user_usecase.dart';
+import 'package:linkora_app/features/regular_user/domain/use_case/get_user_written_blogs_usecase.dart';
+import 'package:linkora_app/features/regular_user/domain/use_case/like_blog_usecase.dart';
 import 'package:linkora_app/features/regular_user/domain/use_case/update_regular_user_usecase.dart';
 import 'package:linkora_app/features/regular_user/domain/use_case/upload_profile_picture_usecase.dart';
 import 'package:linkora_app/features/regular_user/presentation/view_model/profile_bloc.dart';
@@ -185,10 +189,19 @@ _initBlogDependencies() async {
     ),
   );
 
+  getIt.registerLazySingleton<BlogLocalDataSource>(
+    () => BlogLocalDataSource(getIt<HiveService>()),
+  );
+
+  getIt.registerLazySingleton<InternetChecker>(() => InternetChecker());
+
   // Repository
   getIt.registerLazySingleton<IBlogRepository>(
-    () => BlogRemoteRepository(getIt<Dio>(), getIt<TokenSharedPrefs>(),
-        getIt<BlogRemoteDataSource>()), // Pass positional argument
+    () => BlogRemoteRepository(
+      getIt<Dio>(),
+      getIt<TokenSharedPrefs>(),
+      getIt<BlogRemoteDataSource>(),
+    ), // Pass positional argument
   );
 
   // Usecases
@@ -206,11 +219,21 @@ _initBlogDependencies() async {
               getIt<IBlogRepository>()) // Pass positional argument
       );
 
+  getIt.registerLazySingleton<DeleteBlogUseCase>(() => DeleteBlogUseCase(
+          getIt<IBlogRepository>()) // Pass positional argument
+      );
+
+  getIt.registerLazySingleton<LikeBlogUseCase>(() =>
+          LikeBlogUseCase(getIt<IBlogRepository>()) // Pass positional argument
+      );
+
   // Bloc
   getIt.registerFactory<BlogBloc>(
     () => BlogBloc(
       getLatestBlogsUseCase: getIt<GetLatestBlogsUseCase>(),
       getBlogUseCase: getIt<GetBlogUseCase>(),
+      deleteBlogUseCase: getIt<DeleteBlogUseCase>(),
+      likeBlogUseCase: getIt<LikeBlogUseCase>(),
     ),
   );
 
